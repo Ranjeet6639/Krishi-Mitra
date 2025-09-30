@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Krishi Mitra</title>
+  <link rel="stylesheet" href="index.css">
+</head>
+<body id="body">
+
+  <!-- Navbar -->
+  <div class="navbar animate">
+    <h1 class="logo animate">Krishi Mitra</h1>
+    <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+    <div class="nav-links animate" id="navLinks">
+  <a href="index.html">Home</a>
+  <a href="register.html">Register</a>
+  <a href="#">Farmer Login</a>
+  <a href="#">Trader Login</a>
+  <a href="#">Contact Us</a>
+</div>
+
+  </div>
+
+  <!-- Section 1 -->
+  <section class="scroll-section">
+    <div class="scroll-left">
+      <h2>Empowering Farmers</h2>
+    </div>
+    <div class="scroll-right">
+      <img src="/Frontend/images/image 1.jpg" alt="Farmer" class="scroll-image">
+      <p>
+        Krishi Mitra helps farmers adopt modern techniques,
+        provides real-time solutions, and bridges the gap between
+        technology and agriculture.
+      </p>
+    </div>
+  </section>
+
+  <!-- Section 2 -->
+  <section class="scroll-section">
+    <div class="scroll-left">
+      <h2>AI in Agriculture</h2>
+    </div>
+    <div class="scroll-right">
+      <img src="/Frontend/images/image 4.webp" alt="AI Robot" class="scroll-image">
+      <p>
+        Artificial Intelligence is revolutionizing agriculture with
+        crop monitoring, predictive analysis, and smart irrigation
+        systems for sustainable growth.
+      </p>
+    </div>
+  </section>
+
+  <!-- Section 3 -->
+  <section class="scroll-section">
+    <div class="scroll-left">
+      <h2>Smart Farming</h2>
+    </div>
+    <div class="scroll-right">
+      <img src="/Frontend/images/image 5.jpg" alt="Smart Farming" class="scroll-image">
+      <p>
+        Smart sensors and IoT devices provide farmers with
+        insights into soil health, weather patterns, and crop growth,
+        leading to higher productivity.
+      </p>
+    </div>
+  </section>
+
+  <script>
+    // Menu toggle
+    function toggleMenu() {
+      document.getElementById("navLinks").classList.toggle("show");
+    }
+
+    // Slow-motion parallax effect
+    window.addEventListener("scroll", () => {
+      document.querySelectorAll(".scroll-section").forEach(section => {
+        let rect = section.getBoundingClientRect();
+        let scrollPercent = 1 - rect.top / window.innerHeight;
+
+        let image = section.querySelector(".scroll-image");
+        let text = section.querySelector("p");
+
+        if (image) {
+          image.style.transform = `translateY(${scrollPercent * -30}px) scale(1.05)`;
+        }
+        if (text) {
+          text.style.transform = `translateY(${scrollPercent * 20}px)`;
+        }
+      });
+    });
+    
+    
+  </script>
+</body>
+</html>
