@@ -9,7 +9,7 @@
 </head>
 <body>
 <!-- Navbar -->
-  <div class="nav" >
+  <div class="navbar animate" >
     <h1 class="logo animate">Krishi Mitra</h1>
     <button class="menu-toggle" onclick="toggleMenu()">☰</button>
     <div class="nav-links animate" id="navLinks" >
@@ -18,7 +18,7 @@
   <a href="#">Farmer Login</a>
   <a href="#">Trader Login</a>
   <a href="#">Contact Us</a>
-</div><br><br>
+</div></div>
     
   <div class="container">
     
@@ -103,24 +103,30 @@
               <option>Madhya Pradesh</option>
             </select>
           </div>
-          <div class="form-group">
-            <label>District</label>
-            <select id="district" required>
-              <option value="">Select District</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Taluka</label>
-            <select id="taluka" required>
-              <option value="">Select Taluka</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Village</label>
-            <select id="village" required>
-              <option value="">Select Village</option>
-            </select>
-          </div>
+        <div class="form-group">
+  <label>District</label>
+  <select id="district" required>
+    <option value="">Select District</option>
+  </select>
+  <input type="text" id="districtOther" placeholder="Enter District" style="display: none; margin-top: 5px;">
+</div>
+
+<div class="form-group">
+  <label>Taluka</label>
+  <select id="taluka" required>
+    <option value="">Select Taluka</option>
+  </select>
+  <input type="text" id="talukaOther" placeholder="Enter Taluka" style="display: none; margin-top: 5px;">
+</div>
+
+<div class="form-group">
+  <label>Village</label>
+  <select id="village" required>
+    <option value="">Select Village</option>
+  </select>
+  <input type="text" id="villageOther" placeholder="Enter Village" style="display: none; margin-top: 5px;">
+</div>
+
           <div class="form-group">
             <label>Pincode</label>
             <input type="text" id="pincode" required>
@@ -203,6 +209,167 @@
       alert("Registration Successful!");
       form.reset();
     });
+
+     const stateSelect = document.getElementById("state");
+  const districtSelect = document.getElementById("district");
+  const talukaSelect = document.getElementById("taluka");
+  const villageSelect = document.getElementById("village");
+
+  const districtOtherInput = document.getElementById("districtOther");
+  const talukaOtherInput = document.getElementById("talukaOther");
+  const villageOtherInput = document.getElementById("villageOther");
+
+  const locationData = {
+    "Maharashtra": {
+      "Pune": {
+        "Haveli": ["Wagholi", "Lohegaon"],
+        "Mulshi": ["Lavasa", "Pirangut"]
+      },
+      "Mumbai": {
+        "Mumbai Suburban": ["Andheri", "Bandra"],
+        "Mumbai City": ["Colaba", "Churchgate"]
+      }
+    },
+    "Gujarat": {
+      "Ahmedabad": {
+        "Daskroi": ["Bopal", "Ghuma"],
+        "Sanand": ["Virochannagar", "Bol"]
+      },
+      "Surat": {
+        "Choryasi": ["Sayan", "Bamroli"],
+        "Bardoli": ["Palsana", "Masma"]
+      }
+    },
+    "Madhya Pradesh": {
+      "Bhopal": {
+        "Huzur": ["Berasia", "Bhopal North"],
+        "Kolar": ["Kolar", "Bairagarh"]
+      },
+      "Indore": {
+        "Indore": ["Vijay Nagar", "Rau"],
+        "Depalpur": ["Hatod", "Betma"]
+      }
+    }
+  };
+
+  stateSelect.addEventListener("change", function () {
+    const selectedState = stateSelect.value;
+    resetSelect(districtSelect, "District");
+    resetSelect(talukaSelect, "Taluka");
+    resetSelect(villageSelect, "Village");
+
+    districtOtherInput.style.display = "none";
+    talukaOtherInput.style.display = "none";
+    villageOtherInput.style.display = "none";
+
+    if (locationData[selectedState]) {
+      const districts = Object.keys(locationData[selectedState]);
+      districts.forEach(district => {
+        const option = document.createElement("option");
+        option.value = district;
+        option.textContent = district;
+        districtSelect.appendChild(option);
+      });
+      addOtherOption(districtSelect);
+    }
+  });
+
+  districtSelect.addEventListener("change", function () {
+  const selectedState = stateSelect.value;
+  const selectedDistrict = districtSelect.value;
+
+  resetSelect(talukaSelect, "Taluka");
+  resetSelect(villageSelect, "Village");
+
+  // Hide all inputs initially
+  districtOtherInput.style.display = "none";
+  talukaOtherInput.style.display = "none";
+  villageOtherInput.style.display = "none";
+
+  if (selectedDistrict === "Other") {
+    // Show text input for "Other" district
+    districtOtherInput.style.display = "block";
+
+    // Show taluka and village as "Other" inputs because we can't populate options
+    talukaSelect.innerHTML = '<option value="Other">Other</option>';
+    villageSelect.innerHTML = '<option value="Other">Other</option>';
+    talukaOtherInput.style.display = "block";
+    villageOtherInput.style.display = "block";
+
+    return;
+  }
+
+  // If not "Other", load taluka options normally
+  if (
+    locationData[selectedState] &&
+    locationData[selectedState][selectedDistrict]
+  ) {
+    const talukas = Object.keys(locationData[selectedState][selectedDistrict]);
+    talukas.forEach(taluka => {
+      const option = document.createElement("option");
+      option.value = taluka;
+      option.textContent = taluka;
+      talukaSelect.appendChild(option);
+    });
+    addOtherOption(talukaSelect);
+  }
+});
+
+
+  talukaSelect.addEventListener("change", function () {
+  const selectedState = stateSelect.value;
+  const selectedDistrict = districtSelect.value;
+  const selectedTaluka = talukaSelect.value;
+
+  resetSelect(villageSelect, "Village");
+  villageOtherInput.style.display = "none";
+
+  if (selectedTaluka === "Other") {
+    talukaOtherInput.style.display = "block";
+
+    // Force village to "Other" if taluka is also "Other"
+    villageSelect.innerHTML = '<option value="Other">Other</option>';
+    villageOtherInput.style.display = "block";
+    return;
+  } else {
+    talukaOtherInput.style.display = "none";
+  }
+
+  if (
+    locationData[selectedState] &&
+    locationData[selectedState][selectedDistrict] &&
+    locationData[selectedState][selectedDistrict][selectedTaluka]
+  ) {
+    const villages = locationData[selectedState][selectedDistrict][selectedTaluka];
+    villages.forEach(village => {
+      const option = document.createElement("option");
+      option.value = village;
+      option.textContent = village;
+      villageSelect.appendChild(option);
+    });
+    addOtherOption(villageSelect);
+  }
+});
+
+
+  villageSelect.addEventListener("change", function () {
+    if (villageSelect.value === "Other") {
+      villageOtherInput.style.display = "block";
+    } else {
+      villageOtherInput.style.display = "none";
+    }
+  });
+
+  function resetSelect(selectElement, placeholder) {
+    selectElement.innerHTML = `<option value="">Select ${placeholder}</option>`;
+  }
+
+  function addOtherOption(selectElement) {
+    const otherOption = document.createElement("option");
+    otherOption.value = "Other";
+    otherOption.textContent = "Other";
+    selectElement.appendChild(otherOption);
+  }
   </script>
 </body>
 </html>
