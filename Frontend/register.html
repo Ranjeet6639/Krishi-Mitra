@@ -172,13 +172,18 @@
   
 
   <script>
+     // Menu toggle
+    function toggleMenu() {
+      document.getElementById("navLinks").classList.toggle("show");
+    }
+
     const form = document.getElementById("registrationForm");
     const errorMsg = document.getElementById("errorMsg");
-
+     //submit function
     form.addEventListener("submit", function(e) {
       e.preventDefault();
       errorMsg.textContent = "";
-
+      //email,mobile,password,pincode verification
       const email = document.getElementById("email").value;
       const mobile = document.getElementById("mobile").value;
       const password = document.getElementById("password").value;
@@ -209,7 +214,7 @@
       alert("Registration Successful!");
       form.reset();
     });
-
+     //State->District->Taluka->Village dropdown logic
      const stateSelect = document.getElementById("state");
   const districtSelect = document.getElementById("district");
   const talukaSelect = document.getElementById("taluka");
