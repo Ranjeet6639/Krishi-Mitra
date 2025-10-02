@@ -4,6 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>My Account — Krishi Mitra</title>
+  <link rel="stylesheet" href="index.css">
 
   <style>
     :root{
@@ -45,6 +46,15 @@
   </style>
 </head>
 <body>
+<div class="navbar animate">
+    <h1 class="logo animate">Krishi Mitra</h1>
+    <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+    <div class="nav-links animate" id="navLinks">
+  <a href="my-account.html">My Account</a>
+  <a href="">Whether Details</a>
+  <a href="">Schemes</a>
+  <a href="">Logout</a>
+</div> </div>
 
 <div class="wrap">
   <!-- LEFT: Profile Card -->
@@ -108,6 +118,11 @@
 </div>
 
 <script>
+function toggleMenu() {
+  const navLinks = document.getElementById('navLinks');
+  navLinks.style.display = navLinks.style.display === 'block' ? 'none' : 'block';
+}
+
 (function(){
   const storageKey = 'krishi_profile_v2';
   let saved = null;

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Farmer Dashboard - Weather Crop Suggestion</title>
+  <link rel="stylesheet" href="index.css">
+
+  <style>
+    /* 🌿 Theme Colors */
+    :root {
+      --green:#198754;
+      --dark-green:#145c32;
+      --light-green:#d1f5e0;
+      --bg:#f3f6f9;
+      --text:#333;
+      --card:#fff;
+    }
+
+    body {
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: var(--bg);
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background: var(--green);
+      color: white;
+      padding: 16px;
+      text-align: center;
+      font-size: 1.5rem;
+      font-weight: bold;
+      letter-spacing: 1px;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+    }
+
+    .container {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: 18px;
+      padding: 30px;
+      max-width: 520px;
+      width: 100%;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+      transition: 0.3s;
+    }
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 28px rgba(0,0,0,0.12);
+    }
+
+    h2 {
+      color: var(--green);
+      margin-bottom: 10px;
+    }
+    p {
+      color: var(--text);
+      margin-bottom: 20px;
+      font-size: 0.95rem;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid var(--light-green);
+      border-radius: 10px;
+      outline: none;
+      font-size: 1rem;
+      margin-bottom: 14px;
+      transition: border 0.3s;
+    }
+    input:focus {
+      border-color: var(--green);
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      flex: 1;
+      background: var(--green);
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.2s;
+    }
+    button:hover {
+      background: var(--dark-green);
+      transform: scale(1.03);
+    }
+
+    .result {
+      margin-top: 24px;
+      background: var(--light-green);
+      padding: 20px;
+      border-radius: 14px;
+      font-size: 1rem;
+      line-height: 1.5;
+      box-shadow: inset 0 2px 6px rgba(0,0,0,0.05);
+    }
+    .result b {
+      color: var(--dark-green);
+    }
+
+    footer {
+      text-align: center;
+      padding: 14px;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+   <div class="navbar animate">
+    <h1 class="logo animate">Krishi Mitra</h1>
+    <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+    <div class="nav-links animate" id="navLinks">
+  <a href="my-account.html">My Account</a>
+  <a href="">Whether Details</a>
+  <a href="">Schemes</a>
+  <a href="">Logout</a>
+</div> </div>
+
+  <div class="container">
+    <div class="card">
+      <h2>🌤 Weather & Crop Suggestion</h2>
+      <p>Enter your location or use GPS to get recommendations on which crops are suitable to plant now.</p>
+
+      <input type="text" id="locationInput" placeholder="Enter city (e.g., Pune)">
+      
+      <div class="btn-group">
+        <button onclick="getWeather()">Get Suggestions</button>
+        <button onclick="useMyLocation()">📍 Use My Location</button>
+      </div>
+
+      <div id="output" class="result" style="display:none;"></div>
+    </div>
+  </div>
+
+  <footer>© 2025 Krishi Mitra | Empowering Farmers with Technology 🌱</footer>
+
+  <script>
+    // 🌱 Temporary mock data for frontend design
+    function getWeather() {
+      const city = document.getElementById("locationInput").value || "Demo City";
+      const crops = ["Tomato", "Cabbage", "Chilli", "Spinach"];
+      document.getElementById("output").style.display = "block";
+      document.getElementById("output").innerHTML = `
+        📍 <b>Location:</b> ${city}<br>
+        🌡 <b>Temperature:</b> 28°C<br>
+        ⛅ <b>Weather:</b> Partly Cloudy<br>
+        📅 <b>Month:</b> October<br><br>
+        🌱 <b>Recommended Crops:</b> ${crops.join(", ")}
+      `;
+    }
+
+    function useMyLocation() {
+      getWeather(); // Mock same output for now
+    }
+  </script>
+
+</body>
+</html>
