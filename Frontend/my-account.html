@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>My Account — Krishi Mitra</title>
+
+  <style>
+    :root{
+      --accent:#198754; --muted:#6b7280;
+      --card:#ffffff; --bg:#f3f6f9;
+      --radius:14px; --shadow: 0 8px 30px rgba(11,19,32,0.08);
+    }
+    html,body{height:100%;margin:0;font-family:Inter,Arial;}
+    body{background:linear-gradient(180deg,#eef5f1 0%, #f7faf9 100%); display:flex; align-items:center; justify-content:center; padding:30px;}
+    .wrap { width:100%; max-width:1100px; display:grid; grid-template-columns: 360px 1fr; gap:28px; align-items:start; }
+
+    .profile-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:28px 22px 20px;position:relative;}
+    .avatar-wrap{width:120px;height:120px;border-radius:999px;margin:-70px auto 10px;border:6px solid var(--card);background:#fff;overflow:hidden;}
+    .avatar-wrap img{width:100%;height:100%;object-fit:cover;}
+    .profile-card h2{text-align:center;margin:8px 0 4px;font-size:20px;}
+    .profile-role{text-align:center;color:var(--muted);font-size:14px;margin-bottom:14px;}
+    .profile-info{margin-top:14px;font-size:14px;color:var(--muted);}
+    .profile-info .label{font-weight:600;margin-bottom:4px;color:#233;font-size:13px;}
+    .profile-info .value{color:#444;font-size:14px;}
+    .left-actions{display:flex;gap:10px;justify-content:center;margin-top:18px;}
+    .btn{background:var(--accent);color:#fff;border:none;padding:10px 14px;border-radius:8px;cursor:pointer;font-weight:600;font-size:14px;}
+    .btn.ghost{background:transparent;color:var(--accent);border:1px solid rgba(25,135,84,0.12);}
+
+    .details-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px;}
+    .details-header{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:18px;}
+    .details-header h3{margin:0;font-size:18px;color:#142;}
+    .controls button{padding:8px 12px;border-radius:8px;font-weight:600;border:none;cursor:pointer;}
+    .edit-btn{background:#0d6efd;color:#fff;}
+    .save-btn{background:var(--accent);color:#fff;display:none;}
+    .cancel-btn{background:#fff;border:1px solid #e5e7eb;color:#111;display:none;}
+
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px 18px;}
+    .form-row{display:flex;flex-direction:column;gap:6px;}
+    label{font-size:13px;color:var(--muted);font-weight:600;}
+    input,textarea,select{padding:10px 12px;border-radius:8px;border:1px solid #e6e9ee;font-size:14px;color:#111;outline:none;}
+    textarea{min-height:84px;resize:vertical;grid-column:1 / -1;}
+
+    @media(max-width:980px){.wrap{grid-template-columns:1fr;}.form-grid{grid-template-columns:1fr;}}
+  </style>
+</head>
+<body>
+
+<div class="wrap">
+  <!-- LEFT: Profile Card -->
+  <section class="profile-card">
+    <div style="height:52px;"></div>
+    <div class="avatar-wrap">
+      <img id="avatarImg" alt="Farmer avatar" />
+    </div>
+    <h2 id="profileName">Ravi Kumar</h2>
+    <div class="profile-role">Vegetable Farmer</div>
+    <div class="profile-info">
+      <div><div class="label">Email</div><div class="value" id="displayEmail">ravi.kumar@example.com</div></div>
+      <div><div class="label">Phone</div><div class="value" id="displayPhone">+91 9876543210</div></div>
+      <div><div class="label">Location</div><div class="value" id="displayLocation">Lucknow, Uttar Pradesh</div></div>
+    </div>
+    <div class="left-actions">
+      <button class="btn" onclick="goDashboard()">Back to Dashboard</button>
+    </div>
+  </section>
+
+  <!-- RIGHT: Editable details -->
+  <section class="details-card">
+    <div class="details-header">
+      <h3>My Account</h3>
+      <div class="controls">
+        <button class="edit-btn" id="editBtn">Edit</button>
+        <button class="save-btn" id="saveBtn">Save</button>
+        <button class="cancel-btn" id="cancelBtn">Cancel</button>
+      </div>
+    </div>
+
+    <form id="profileForm" onsubmit="return false;">
+      <div class="form-grid">
+        <div class="form-row">
+          <label>Full name</label>
+          <input id="fullName" type="text" value="Ravi Kumar" disabled />
+        </div>
+        <div class="form-row">
+          <label>Role</label>
+          <input id="role" type="text" value="Vegetable Farmer" disabled />
+        </div>
+        <div class="form-row">
+          <label>Email</label>
+          <input id="email" type="email" value="ravi.kumar@example.com" disabled required />
+        </div>
+        <div class="form-row">
+          <label>Phone</label>
+          <input id="phone" type="tel" value="+91 9876543210" disabled pattern="^(\+91[\-\s]?)?[0]?(91)?[789]\d{9}$" required />
+        </div>
+        <div class="form-row" style="grid-column:1 / -1;">
+          <label>Address</label>
+          <textarea id="address" disabled required>Lucknow, Uttar Pradesh</textarea>
+        </div>
+        <div class="form-group">
+            <label>Pincode</label>
+            <input type="text" id="pincode" required>
+          </div>
+      </div>
+    </form>
+  </section>
+</div>
+
+<script>
+(function(){
+  const storageKey = 'krishi_profile_v2';
+  let saved = null;
+  const defaults = {
+    fullName: 'Ravi Kumar',
+    role: 'Vegetable Farmer',
+    email: 'ravi.kumar@example.com',
+    phone: '+91 9876543210',
+    address: 'Lucknow, Uttar Pradesh',
+    pincode: '226001'
+  };
+
+  const editBtn = document.getElementById('editBtn');
+  const saveBtn = document.getElementById('saveBtn');
+  const cancelBtn = document.getElementById('cancelBtn');
+
+  const inputs = {
+    fullName: document.getElementById('fullName'),
+    role: document.getElementById('role'),
+    email: document.getElementById('email'),
+    phone: document.getElementById('phone'),
+    address: document.getElementById('address'),
+    pincode: document.getElementById('pincode')
+  };
+
+  const displayFields = {
+    profileName: document.getElementById('profileName'),
+    displayEmail: document.getElementById('displayEmail'),
+    displayPhone: document.getElementById('displayPhone'),
+    displayLocation: document.getElementById('displayLocation'),
+    avatarImg: document.getElementById('avatarImg')
+  };
+
+  function load(){
+    try {
+      const raw = localStorage.getItem(storageKey);
+      saved = raw ? JSON.parse(raw) : {...defaults};
+    } catch(e){ saved = {...defaults}; }
+    applyToUI(saved);
+  }
+
+  function applyToUI(data){
+    inputs.fullName.value = data.fullName;
+    inputs.role.value = data.role;
+    inputs.email.value = data.email;
+    inputs.phone.value = data.phone;
+    inputs.address.value = data.address;
+    inputs.pincode.value = data.pincode;
+    displayFields.profileName.textContent = data.fullName;
+    displayFields.displayEmail.textContent = data.email;
+    displayFields.displayPhone.textContent = data.phone;
+    displayFields.displayLocation.textContent = data.address;
+    displayFields.avatarImg.src = "https://via.placeholder.com/120x120.png?text=Farmer";
+  }
+
+  function setEditMode(on){
+    inputs.email.disabled = !on;
+    inputs.phone.disabled = !on;
+    inputs.address.disabled = !on;
+    inputs.pincode.disabled = !on;
+    editBtn.style.display = on?'none':'inline-block';
+    saveBtn.style.display = on?'inline-block':'none';
+    cancelBtn.style.display = on?'inline-block':'none';
+  }
+
+  editBtn.addEventListener('click',()=> setEditMode(true));
+  cancelBtn.addEventListener('click',()=>{applyToUI(saved); setEditMode(false);});
+  saveBtn.addEventListener('click',()=>{
+    if(!inputs.email.checkValidity()){alert("Enter a valid email"); return;}
+    if(!inputs.phone.checkValidity()){alert("Enter a valid phone number"); return;}
+    const newData = {
+      fullName: inputs.fullName.value,
+      role: inputs.role.value,
+      email: inputs.email.value,
+      phone: inputs.phone.value,
+      address: inputs.address.value,
+      pincode: inputs.pincode.value
+    };
+    localStorage.setItem(storageKey, JSON.stringify(newData));
+    saved = newData;
+    applyToUI(saved);
+    setEditMode(false);
+    alert("Changes saved successfully!");
+  });
+
+  window.goDashboard = ()=> window.location.href='farmer-dashboard.html';
+
+  load();
+  setEditMode(false);
+})();
+</script>
+
+</body>
+</html>
