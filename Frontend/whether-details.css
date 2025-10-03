@@ -1,0 +1,119 @@
+/* 🌿 Theme Colors */
+    :root {
+      --green:#198754;
+      --dark-green:#145c32;
+      --light-green:#d1f5e0;
+      --bg:#f3f6f9;
+      --text:#333;
+      --card:#fff;
+    }
+
+    body {
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: var(--bg);
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background: var(--green);
+      color: white;
+      padding: 16px;
+      text-align: center;
+      font-size: 1.5rem;
+      font-weight: bold;
+      letter-spacing: 1px;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+    }
+
+    .container {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: 18px;
+      padding: 30px;
+      max-width: 520px;
+      width: 100%;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+      transition: 0.3s;
+    }
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 28px rgba(0,0,0,0.12);
+    }
+
+    h2 {
+      color: var(--green);
+      margin-bottom: 10px;
+    }
+    p {
+      color: var(--text);
+      margin-bottom: 20px;
+      font-size: 0.95rem;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid var(--light-green);
+      border-radius: 10px;
+      outline: none;
+      font-size: 1rem;
+      margin-bottom: 14px;
+      transition: border 0.3s;
+    }
+    input:focus {
+      border-color: var(--green);
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      flex: 1;
+      background: var(--green);
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.2s;
+    }
+    button:hover {
+      background: var(--dark-green);
+      transform: scale(1.03);
+    }
+
+    .result {
+      margin-top: 24px;
+      background: var(--light-green);
+      padding: 20px;
+      border-radius: 14px;
+      font-size: 1rem;
+      line-height: 1.5;
+      box-shadow: inset 0 2px 6px rgba(0,0,0,0.05);
+    }
+    .result b {
+      color: var(--dark-green);
+    }
+
+    footer {
+      text-align: center;
+      padding: 14px;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+    #soilInput{
+        background-color:#198754;padding: 3px;border-radius: 10px;
+    }

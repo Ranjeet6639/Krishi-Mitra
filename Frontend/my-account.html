@@ -43,6 +43,17 @@
     textarea{min-height:84px;resize:vertical;grid-column:1 / -1;}
 
     @media(max-width:980px){.wrap{grid-template-columns:1fr;}.form-grid{grid-template-columns:1fr;}}
+    body {
+  background: linear-gradient(180deg,#eef5f1 0%, #f7faf9 100%);
+  padding: 100px 30px 30px; /* top padding for navbar */
+}
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 97%;
+}
+
   </style>
 </head>
 <body>
@@ -51,7 +62,7 @@
     <button class="menu-toggle" onclick="toggleMenu()">☰</button>
     <div class="nav-links animate" id="navLinks">
   <a href="my-account.html">My Account</a>
-  <a href="">Whether Details</a>
+  <a href="whether-details.html">Whether Details</a>
   <a href="">Schemes</a>
   <a href="">Logout</a>
 </div> </div>

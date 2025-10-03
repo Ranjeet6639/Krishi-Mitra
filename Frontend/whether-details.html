@@ -5,125 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Farmer Dashboard - Weather Crop Suggestion</title>
   <link rel="stylesheet" href="index.css">
-
-  <style>
-    /* 🌿 Theme Colors */
-    :root {
-      --green:#198754;
-      --dark-green:#145c32;
-      --light-green:#d1f5e0;
-      --bg:#f3f6f9;
-      --text:#333;
-      --card:#fff;
-    }
-
-    body {
-      font-family: "Segoe UI", Arial, sans-serif;
-      background: var(--bg);
-      margin: 0;
-      padding: 0;
-    }
-
-    header {
-      background: var(--green);
-      color: white;
-      padding: 16px;
-      text-align: center;
-      font-size: 1.5rem;
-      font-weight: bold;
-      letter-spacing: 1px;
-      box-shadow: 0 3px 8px rgba(0,0,0,0.1);
-    }
-
-    .container {
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      min-height: 100vh;
-      padding: 40px 20px;
-    }
-
-    .card {
-      background: var(--card);
-      border-radius: 18px;
-      padding: 30px;
-      max-width: 520px;
-      width: 100%;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.08);
-      transition: 0.3s;
-    }
-    .card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 10px 28px rgba(0,0,0,0.12);
-    }
-
-    h2 {
-      color: var(--green);
-      margin-bottom: 10px;
-    }
-    p {
-      color: var(--text);
-      margin-bottom: 20px;
-      font-size: 0.95rem;
-    }
-
-    input {
-      width: 100%;
-      padding: 12px;
-      border: 2px solid var(--light-green);
-      border-radius: 10px;
-      outline: none;
-      font-size: 1rem;
-      margin-bottom: 14px;
-      transition: border 0.3s;
-    }
-    input:focus {
-      border-color: var(--green);
-    }
-
-    .btn-group {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-
-    button {
-      flex: 1;
-      background: var(--green);
-      color: white;
-      border: none;
-      padding: 12px;
-      border-radius: 10px;
-      font-size: 1rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: background 0.3s, transform 0.2s;
-    }
-    button:hover {
-      background: var(--dark-green);
-      transform: scale(1.03);
-    }
-
-    .result {
-      margin-top: 24px;
-      background: var(--light-green);
-      padding: 20px;
-      border-radius: 14px;
-      font-size: 1rem;
-      line-height: 1.5;
-      box-shadow: inset 0 2px 6px rgba(0,0,0,0.05);
-    }
-    .result b {
-      color: var(--dark-green);
-    }
-
-    footer {
-      text-align: center;
-      padding: 14px;
-      font-size: 0.85rem;
-      color: var(--muted);
-    }
-  </style>
+  <link rel="stylesheet" href="whether-details.css">
 </head>
 <body>
    <div class="navbar animate">
@@ -141,37 +23,176 @@
       <h2>🌤 Weather & Crop Suggestion</h2>
       <p>Enter your location or use GPS to get recommendations on which crops are suitable to plant now.</p>
 
-      <input type="text" id="locationInput" placeholder="Enter city (e.g., Pune)">
-      
-      <div class="btn-group">
-        <button onclick="getWeather()">Get Suggestions</button>
-        <button onclick="useMyLocation()">📍 Use My Location</button>
-      </div>
+    <input type="text" id="locationInput" placeholder="Enter city (e.g., Pune)">
+    
+    <label for="soilInput">Select Soil Type:</label>
+    <select id="soilInput">
+      <option value="Loamy">Loamy</option>
+      <option value="Clay">Clay</option>
+      <option value="Sandy">Sandy</option>
+    </select>
+    <br><br>
 
-      <div id="output" class="result" style="display:none;"></div>
+
+    <div class="btn-group">
+      <button onclick="getWeather()">Get Suggestions</button>
+      <button onclick="useMyLocation()">📍 Use My Location</button>
     </div>
+
+    <div id="output" class="result" style="display:none;"></div>
   </div>
+</div>
 
-  <footer>© 2025 Krishi Mitra | Empowering Farmers with Technology 🌱</footer>
+<footer>© 2025 Krishi Mitra | Empowering Farmers with Technology 🌱</footer>
 
-  <script>
-    // 🌱 Temporary mock data for frontend design
-    function getWeather() {
-      const city = document.getElementById("locationInput").value || "Demo City";
-      const crops = ["Tomato", "Cabbage", "Chilli", "Spinach"];
-      document.getElementById("output").style.display = "block";
-      document.getElementById("output").innerHTML = `
-        📍 <b>Location:</b> ${city}<br>
-        🌡 <b>Temperature:</b> 28°C<br>
-        ⛅ <b>Weather:</b> Partly Cloudy<br>
-        📅 <b>Month:</b> October<br><br>
-        🌱 <b>Recommended Crops:</b> ${crops.join(", ")}
+<script>
+  
+const API_KEY = "089b099ad414f1f55b1fd4daa3e3c95b";
+
+// 🌱 Crop Database
+const cropDB = [
+  { name: "Rice", soil: ["Clay", "Loamy"], temp: [20, 35], rainfall: "High", season: [4,5,6,7,8] },
+  { name: "Wheat", soil: ["Loamy", "Sandy"], temp: [10, 25], rainfall: "Low", season: [10,11,0,1] },
+  { name: "Maize", soil: ["Sandy", "Loamy"], temp: [18, 30], rainfall: "Medium", season: [5,6,7,8,9] },
+  { name: "Sugarcane", soil: ["Clay", "Loamy"], temp: [20, 38], rainfall: "High", season: [3,4,5,6,7,8] },
+  { name: "Pulses", soil: ["Sandy", "Loamy"], temp: [18, 30], rainfall: "Low", season: [6,7,8,9] }
+];
+
+// 📊 Get Rainfall Category
+function getRainfallCategory(humidity, rain) {
+  if (rain > 50 || humidity > 80) return "High";
+  if (rain > 10 || humidity > 60) return "Medium";
+  return "Low";
+}
+
+// 🌱 Advanced Crop Suggestion
+function suggestCrops(temp, humidity, rain, soilType) {
+  const month = new Date().getMonth();
+  const rainfall = getRainfallCategory(humidity, rain);
+
+  return cropDB.filter(crop => 
+    crop.soil.includes(soilType) &&
+    temp >= crop.temp[0] && temp <= crop.temp[1] &&
+    crop.rainfall === rainfall &&
+    crop.season.includes(month)
+  ).map(c => c.name);
+}
+
+// 🌦 Fetch Weather by City
+async function getWeather() {
+  const input = document.getElementById("locationInput").value.trim();
+  const soilType = document.getElementById("soilInput").value;
+  const output = document.getElementById("output");
+
+  if (!input) {
+    output.innerHTML = "⚠️ Please enter at least one location.";
+    return;
+  }
+
+  const cities = input.split(",").map(c => c.trim());
+  output.style.display = "block";
+  output.innerHTML = "⏳ Fetching weather for multiple locations...";
+
+  let results = "";
+
+  for (let city of cities) {
+    try {
+      const res = await fetch(
+        `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=metric`
+      );
+      const data = await res.json();
+
+      if (data.cod !== 200) {
+        results += `<p>❌ ${city}: City not found</p>`;
+        continue;
+      }
+
+      const temp = data.main.temp;
+      const humidity = data.main.humidity;
+      const rain = data.rain ? data.rain["1h"] || 0 : 0;
+      const condition = data.weather[0].main;
+      const month = new Date().toLocaleString("default", { month: "long" });
+
+      const crops = suggestCrops(temp, humidity, rain, soilType);
+
+      results += `
+        <div style="background:#e9f7ef; padding:10px; margin:10px; border-radius:10px">
+          📍 <b>${data.name}</b><br>
+          🌡 Temp: ${temp} °C<br>
+          ⛅ Weather: ${condition}<br>
+          💧 Humidity: ${humidity}%<br>
+          🌧 Rain: ${rain} mm<br>
+          🏞 Soil: ${soilType}<br>
+          📅 Month: ${month}<br>
+          🌱 <b>Crops:</b> ${crops.length ? crops.join(", ") : "No perfect match"}
+        </div>
       `;
+    } catch (err) {
+      results += `<p>⚠️ Error fetching ${city}</p>`;
     }
+  }
 
-    function useMyLocation() {
-      getWeather(); // Mock same output for now
+  output.innerHTML = results;
+}
+
+// 📍 Fetch Weather using GPS (Live Location)
+function useMyLocation() {
+  const soilType = document.getElementById("soilInput").value;
+  const output = document.getElementById("output");
+
+  if (!navigator.geolocation) {
+    output.style.display = "block";
+    output.innerHTML = "⚠️ Geolocation not supported by your browser.";
+    return;
+  }
+
+  output.style.display = "block";
+  output.innerHTML = "⏳ Detecting your location...";
+
+  navigator.geolocation.getCurrentPosition(async (pos) => {
+    const lat = pos.coords.latitude;
+    const lon = pos.coords.longitude;
+
+    try {
+      const res = await fetch(
+        `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric`
+      );
+      const data = await res.json();
+
+      if (data.cod !== 200) {
+        output.innerHTML = "❌ Could not fetch weather for your location.";
+        return;
+      }
+
+      const temp = data.main.temp;
+      const humidity = data.main.humidity;
+      const rain = data.rain ? data.rain["1h"] || 0 : 0;
+      const condition = data.weather[0].main;
+      const month = new Date().toLocaleString("default", { month: "long" });
+
+      const crops = suggestCrops(temp, humidity, rain, soilType);
+
+      output.innerHTML = `
+        <div style="background:#e9f7ef; padding:10px; margin:10px; border-radius:10px">
+          📍 <b>${data.name}</b> (Your Location)<br>
+          🌡 Temp: ${temp} °C<br>
+          ⛅ Weather: ${condition}<br>
+          💧 Humidity: ${humidity}%<br>
+          🌧 Rain: ${rain} mm<br>
+          🏞 Soil: ${soilType}<br>
+          📅 Month: ${month}<br>
+          🌱 <b>Crops:</b> ${crops.length ? crops.join(", ") : "No perfect match"}
+        </div>
+      `;
+    } catch (err) {
+      output.innerHTML = "⚠️ Error fetching weather. Please try again.";
     }
+  }, () => {
+    output.innerHTML = "⚠️ Location access denied.";
+  });
+}
+
+
   </script>
 
 </body>
