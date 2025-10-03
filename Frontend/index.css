@@ -10,7 +10,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: green;
+  background: rgb(0, 128, 0);
   padding: 10px 20px;
   border-radius: 10px;
 }
