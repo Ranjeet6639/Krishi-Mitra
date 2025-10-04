@@ -30,7 +30,56 @@
     <div class="price-grid" id="priceGrid">
       <!-- Prices will appear here -->
     </div>
+  </div><br><br><br>
+
+  <!-- 🌾 Crop Disease Detection Knowledge -->
+<section class="disease-carousel">
+  <h3>🧫 Crop Disease Detection & Awareness</h3>
+
+  <div class="carousel-container">
+    <div class="carousel-track" id="diseaseTrack">
+      <div class="disease-slide">
+        <img src="src/assets/wheat rust.jpeg" alt="Wheat Rust">
+        <h4>Wheat — Rust Disease</h4>
+        <p>Caused by fungi <i>Puccinia</i>. Orange pustules on leaves and stems.  
+        <b>Prevention:</b> Use resistant wheat varieties & proper irrigation management.</p>
+      </div>
+
+      <div class="disease-slide">
+        <img src="src/assets/Rice blast.jpg" alt="Rice Blast">
+        <h4>Rice — Blast Disease</h4>
+        <p>Caused by <i>Magnaporthe oryzae</i>. Diamond spots on leaves and necks.  
+        <b>Prevention:</b> Use clean seeds & spray tricyclazole fungicide.</p>
+      </div>
+
+      <div class="disease-slide">
+        <img src="src/assets/Maze Downy Mildew.jpg" alt="Maize Leaf Blight">
+        <h4>Maize — Leaf Blight</h4>
+        <p>Caused by <i>Exserohilum turcicum</i>. Brown lesions appear along leaf veins.  
+        <b>Prevention:</b> Crop rotation & Mancozeb spray recommended.</p>
+      </div>
+
+      <div class="disease-slide">
+        <img src="https://images.unsplash.com/photo-1599641324309-b47a4b9bb35b?auto=format&fit=crop&w=800&q=80" alt="Cotton Boll Rot">
+        <h4>Cotton — Boll Rot</h4>
+        <p>Bacteria/fungi infection turning bolls brown and soft.  
+        <b>Prevention:</b> Maintain field hygiene & use carbendazim fungicide.</p>
+      </div>
+
+      <div class="disease-slide">
+        <img src="https://images.unsplash.com/photo-1611078483230-9cc70b7a62f9?auto=format&fit=crop&w=800&q=80" alt="Potato Late Blight">
+        <h4>Potato — Late Blight</h4>
+        <p>Caused by <i>Phytophthora infestans</i>. Blackish leaf spots & tuber rot.  
+        <b>Prevention:</b> Avoid water stagnation & apply copper fungicides.</p>
+      </div>
+    </div>
+
+    <!-- Navigation buttons -->
+    <button class="carousel-btn prev" onclick="prevSlide()">❮</button>
+    <button class="carousel-btn next" onclick="nextSlide()">❯</button>
   </div>
+</section>
+
 
   <footer>© 2025 Krishi Mitra | Empowering Farmers with Technology 🌱</footer>
 
@@ -103,7 +152,28 @@
     // Initialize
     getUserLocation();
 
-    
+    // 🌿 Crop Disease Carousel Script
+const track = document.getElementById("diseaseTrack");
+let currentIndex = 0;
+const slides = document.querySelectorAll(".disease-slide");
+
+function updateSlide() {
+  track.style.transform = `translateX(-${currentIndex * 100}%)`;
+}
+
+function nextSlide() {
+  currentIndex = (currentIndex + 1) % slides.length;
+  updateSlide();
+}
+
+function prevSlide() {
+  currentIndex = (currentIndex - 1 + slides.length) % slides.length;
+  updateSlide();
+}
+
+// Auto-slide every 5 seconds
+setInterval(nextSlide, 5000);
+
   </script>
 </body>
 </html>

@@ -7,8 +7,8 @@
   }
   
   body {
-      background:rgb(205, 255, 205);
-
+      background:linear-gradient(90deg, rgba(42,123,155,1) 0%, rgba(87,199,133,1) 50%, rgba(237,221,83,1) 100%);
+      
       font-family: "Poppins", sans-serif;
       margin: 0;
       padding: 0;
@@ -85,3 +85,93 @@
       color: var(--muted);
       padding-bottom: 20px;
   }
+  /* 🌾 Crop Disease Detection Carousel */
+.disease-carousel {
+  margin: 25px 0;
+  margin-left: 50px;
+  margin-right: 50px;
+  background: var(--card, #ffffff);
+  padding: 16px;
+  border-radius: 14px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.disease-carousel h3 {
+  margin-bottom: 12px;
+  color: var(--accent, #198754);
+  font-size: 1.4em;
+  text-align: center;
+}
+
+.carousel-container {
+  position: relative;
+  overflow: hidden;
+}
+
+.carousel-track {
+  display: flex;
+  transition: transform 0.7s ease-in-out;
+}
+
+.disease-slide {
+  min-width: 100%;
+  box-sizing: border-box;
+  padding: 16px;
+  text-align: center;
+}
+
+.disease-slide img {
+  width: 50%;
+  height: 300px;
+  object-fit: cover;
+  border-radius: 12px;
+  margin-bottom: 10px;
+}
+
+.disease-slide h4 {
+  font-size: 1.2em;
+  color: #333;
+  margin-bottom: 6px;
+}
+
+.disease-slide p {
+  font-size: 0.95em;
+  color: #555;
+  text-align: left;
+}
+
+/* Carousel Buttons */
+.carousel-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--accent, #198754);
+  border: none;
+  color: white;
+  font-size: 1.8em;
+  cursor: pointer;
+  padding: 6px 12px;
+  border-radius: 50%;
+  opacity: 0.7;
+  transition: 0.3s;
+}
+.carousel-btn:hover {
+  opacity: 1;
+}
+.carousel-btn.prev {
+  left: 10px;
+}
+.carousel-btn.next {
+  right: 10px;
+}
+
+@media (max-width: 768px) {
+  .disease-slide img {
+    height: 220px;
+  }
+  .carousel-btn {
+    font-size: 1.5em;
+  }
+}
