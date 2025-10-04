@@ -1,29 +1,109 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Farmer-Dashboard</title>
-    <link rel="stylesheet" href="index.css">
-    <link rel="stylesheet" href="farmer-dashboard.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Farmer Dashboard — Krishi Mitra</title>
+  <link rel="stylesheet" href="index.css" />
+  <link rel="stylesheet" href="farmer-dashboard.css" />
+
 </head>
 <body>
-    <div class="navbar animate">
+  <!-- Navbar -->
+  <div class="navbar animate">
     <h1 class="logo animate">Krishi Mitra</h1>
     <button class="menu-toggle" onclick="toggleMenu()">☰</button>
     <div class="nav-links animate" id="navLinks">
-  <a href="my-account.html">My Account</a>
-  <a href="whether-details.html">Whether Details</a>
-  <a href="">Schemes</a>
-  <a href="">Logout</a>
-</div>
-  </div><br><br>
-    <div class="dashboard-container">
-        <h2>Welcome to Your Dashboard</h2>
-        </div>
+      <a href="my-account.html">My Account</a>
+      <a href="whether-details.html">Weather Details</a>
+      <a href="">Schemes</a>
+      <a href="">Logout</a>
     </div>
+  </div>
 
-    <footer>© 2025 Krishi Mitra | Empowering Farmers with Technology 🌱</footer>
+  <!-- Dashboard -->
+  <div class="dashboard-container">
+    <h2>🌾 Welcome to Your Dashboard</h2>
+    <div id="location-info">Fetching your location...</div>
+    <button class="refresh-btn" onclick="fetchSeedPrices()">🔄 Refresh Prices</button>
 
+    <div class="price-grid" id="priceGrid">
+      <!-- Prices will appear here -->
+    </div>
+  </div>
+
+  <footer>© 2025 Krishi Mitra | Empowering Farmers with Technology 🌱</footer>
+
+  <script>
+    async function fetchSeedPrices() {
+      const priceGrid = document.getElementById("priceGrid");
+      priceGrid.innerHTML = "<p>Loading latest prices...</p>";
+
+      try {
+        // Simulated seed price data — replace later with real API
+        const mockData = [
+          { crop: "Wheat", price: "₹2,150 / quintal" },
+          { crop: "Rice", price: "₹2,800 / quintal" },
+          { crop: "Maize", price: "₹1,950 / quintal" },
+          { crop: "Pulses", price: "₹5,000 / quintal" },
+          { crop: "Groundnut", price: "₹6,200 / quintal" },
+          { crop: "Soybean", price: "₹4,850 / quintal" }
+        ];
+
+        // Simulate delay
+        await new Promise(res => setTimeout(res, 1000));
+
+        // Display prices
+        priceGrid.innerHTML = mockData.map(item => `
+          <div class="price-card">
+            <div class="crop-name">${item.crop}</div>
+            <div class="crop-price">Current Price: ${item.price}</div>
+          </div>
+        `).join("");
+      } catch (err) {
+        priceGrid.innerHTML = "<p style='color:red;'>Failed to load seed prices. Try again.</p>";
+        console.error(err);
+      }
+    }
+
+    // Get user's location
+    function getUserLocation() {
+      const locInfo = document.getElementById("location-info");
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          async position => {
+            const lat = position.coords.latitude;
+            const lon = position.coords.longitude;
+            try {
+              const res = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=en`);
+              const data = await res.json();
+              const locationName = `${data.city || data.locality || "Your Area"}, ${data.principalSubdivision}`;
+              locInfo.textContent = `📍 Location: ${locationName}`;
+            } catch {
+              locInfo.textContent = "📍 Location detected, but could not fetch name.";
+            }
+            fetchSeedPrices();
+          },
+          () => {
+            locInfo.textContent = "📍 Unable to access location. Showing general prices.";
+            fetchSeedPrices();
+          }
+        );
+      } else {
+        locInfo.textContent = "📍 Location not supported by your browser.";
+        fetchSeedPrices();
+      }
+    }
+
+    // Navbar toggle
+    function toggleMenu() {
+      document.getElementById("navLinks").classList.toggle("show");
+    }
+
+    // Initialize
+    getUserLocation();
+
+    
+  </script>
 </body>
 </html>
