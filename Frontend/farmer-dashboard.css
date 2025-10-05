@@ -175,3 +175,129 @@
     font-size: 1.5em;
   }
 }
+
+/* 🌿 Fertilizer Recommendation System */
+.fertilizer-section {
+  background: linear-gradient(to right, #f0fff0, #e8ffe6);
+  padding: 40px;
+  border-radius: 15px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  margin: 60px auto;
+  width: 80%;
+}
+
+.fertilizer-section h3 {
+  color: #2e8b57;
+  margin-bottom: 10px;
+}
+
+.fertilizer-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin: 20px auto;
+  max-width: 400px;
+}
+
+.fertilizer-form select,
+.fertilizer-form input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+.fertilizer-form button {
+  background-color: #2e8b57;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.fertilizer-form button:hover {
+  background-color: #256d45;
+}
+
+.fertilizer-output {
+  margin-top: 30px;
+  background: white;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  text-align: left;
+}
+
+.fertilizer-output h4 {
+  color: #006400;
+}
+
+.fertilizer-output ul {
+  list-style: none;
+  padding: 0;
+}
+
+.fertilizer-output li {
+  margin: 5px 0;
+}
+
+.download-btn {
+  background-color: #228b22;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 10px;
+  margin-top: 15px;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.download-btn:hover {
+  background-color: #176b17;
+}
+
+/* 🗺️ Nearby Agricultural Services Map */
+
+.nearby-services-section {
+  margin: 60px auto;
+  width: 85%;
+  background: #f6faf6;
+  border-radius: 12px;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+  padding: 20px;
+}
+
+.nearby-services-section h3 {
+  color: #1e824c;
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.nearby-services-section p {
+  text-align: center;
+  color: #555;
+  margin-bottom: 15px;
+}
+
+#map {
+  width: 100%;
+  height: 450px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+}
+
+.legend {
+  background: white;
+  padding: 10px 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  font-size: 14px;
+}
+.legend span {
+  font-size: 18px;
+  margin-right: 6px;
+}

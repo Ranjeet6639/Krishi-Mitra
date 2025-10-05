@@ -78,7 +78,64 @@
     <button class="carousel-btn prev" onclick="prevSlide()">❮</button>
     <button class="carousel-btn next" onclick="nextSlide()">❯</button>
   </div>
+</section><br><br>
+
+<!-- 🌿 Fertilizer Recommendation System -->
+<section class="fertilizer-section">
+  <h3>🌿 Fertilizer Recommendation System</h3>
+  <p>Select your crop details to get tailored fertilizer and nutrient advice.</p>
+
+  <div class="fertilizer-form">
+    <label for="crop">Crop Name:</label>
+    <select id="crop">
+      <option value="">-- Select Crop --</option>
+      <option value="wheat">Wheat</option>
+      <option value="rice">Rice</option>
+      <option value="maize">Maize</option>
+      <option value="cotton">Cotton</option>
+      <option value="potato">Potato</option>
+      <option value="soybean">Soybean</option>
+    </select>
+
+    <label for="soil">Soil Type:</label>
+    <select id="soil">
+      <option value="">-- Select Soil Type --</option>
+      <option value="loamy">Loamy</option>
+      <option value="sandy">Sandy</option>
+      <option value="clay">Clay</option>
+    </select>
+
+    <label for="ph">Soil pH Level:</label>
+    <input type="number" id="ph" min="3" max="10" step="0.1" placeholder="e.g., 6.5" />
+
+    <button onclick="getFertilizerRecommendation()">🌾 Get Recommendation</button>
+  </div>
+
+  <div id="fertilizerOutput" class="fertilizer-output"></div>
+
+  <canvas id="fertilizerChart" style="max-width: 500px; margin: 30px auto; display: none;"></canvas>
+
+  <button id="downloadPDFBtn" class="download-btn" style="display: none;">📄 Download as PDF</button>
 </section>
+
+<!-- 📊 Chart.js & 📑 jsPDF CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<!-- 📍 Nearby Agricultural Services Section -->
+<section class="nearby-services-section">
+  <h3>📍 Nearby Agricultural Services</h3>
+  <p>Find fertilizer shops, mandis, cold storages, and Krishi Kendras around you.</p>
+  <div id="map" style="width:100%; height:450px; border-radius:10px;"></div>
+</section>
+
+<!-- Leaflet CSS + JS -->
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
 
 
   <footer>© 2025 Krishi Mitra | Empowering Farmers with Technology 🌱</footer>
@@ -173,6 +230,186 @@ function prevSlide() {
 
 // Auto-slide every 5 seconds
 setInterval(nextSlide, 5000);
+
+let fertilizerChart = null;
+
+async function getFertilizerRecommendation() {
+  const crop = document.getElementById("crop").value;
+  const soil = document.getElementById("soil").value;
+  const ph = parseFloat(document.getElementById("ph").value);
+  const outputDiv = document.getElementById("fertilizerOutput");
+  const chartCanvas = document.getElementById("fertilizerChart");
+  const downloadBtn = document.getElementById("downloadPDFBtn");
+
+  if (!crop || !soil || isNaN(ph)) {
+    outputDiv.innerHTML = "<p style='color:red;'>⚠️ Please fill in all details to get a recommendation.</p>";
+    chartCanvas.style.display = "none";
+    downloadBtn.style.display = "none";
+    return;
+  }
+
+  const recommendations = {
+    wheat: { npk: "120:60:40", schedule: "Basal: ½ N + full P + full K, Topdress: ½ N at tillering", organic: "Compost + Vermicompost" },
+    rice: { npk: "100:50:50", schedule: "Basal: ⅔ N + full P + full K, Topdress: ⅓ N at panicle initiation", organic: "Green manure + Cow dung slurry" },
+    maize: { npk: "150:75:40", schedule: "Basal: ½ N + full P + full K, Topdress: ½ N at knee-high stage", organic: "Biofertilizer + Neem cake" },
+    cotton: { npk: "80:40:40", schedule: "Basal: full P + full K, Topdress: N in 2 equal splits", organic: "Compost + Azospirillum" },
+    potato: { npk: "120:100:120", schedule: "Basal: ½ N + full P + ½ K, Topdress: Remaining N & K after 30 days", organic: "Farmyard manure + Bone meal" },
+    soybean: { npk: "20:60:40", schedule: "Basal: full dose before sowing", organic: "Rhizobium culture + Compost" }
+  };
+
+  const rec = recommendations[crop];
+  const npkValues = rec.npk.split(":").map(Number);
+
+  let soilAdjust = "";
+  if (ph < 6) soilAdjust = "🧪 Acidic soil detected — add lime before sowing.";
+  else if (ph > 7.5) soilAdjust = "🧪 Alkaline soil — add gypsum or organic matter to balance pH.";
+  else soilAdjust = "✅ Soil pH optimal for nutrient absorption.";
+
+  outputDiv.innerHTML = `
+    <h4>🌾 Recommended Fertilizer Plan for ${crop.charAt(0).toUpperCase() + crop.slice(1)}</h4>
+    <ul>
+      <li><b>Soil Type:</b> ${soil}</li>
+      <li><b>Soil pH:</b> ${ph}</li>
+      <li><b>NPK Ratio:</b> ${rec.npk}</li>
+      <li><b>Application Schedule:</b> ${rec.schedule}</li>
+      <li><b>Organic Alternative:</b> ${rec.organic}</li>
+    </ul>
+    <p>${soilAdjust}</p>
+  `;
+
+  chartCanvas.style.display = "block";
+  downloadBtn.style.display = "inline-block";
+
+  if (fertilizerChart) fertilizerChart.destroy();
+
+  fertilizerChart = new Chart(chartCanvas, {
+    type: "bar",
+    data: {
+      labels: ["Nitrogen (N)", "Phosphorus (P)", "Potassium (K)"],
+      datasets: [{
+        label: "Nutrient Ratio",
+        data: npkValues,
+        backgroundColor: ["#66bb6a", "#ffee58", "#42a5f5"],
+        borderColor: ["#388e3c", "#fbc02d", "#1e88e5"],
+        borderWidth: 1
+      }]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        y: {
+          beginAtZero: true,
+          title: { display: true, text: "Nutrient Level (kg/acre)", color: "#444" }
+        }
+      },
+      plugins: {
+        legend: { display: false },
+        title: {
+          display: true,
+          text: "NPK Ratio Visualization",
+          color: "#2e7d32",
+          font: { size: 16, weight: "bold" }
+        }
+      }
+    }
+  });
+
+  // 📄 Handle PDF download
+  downloadBtn.onclick = async () => {
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF();
+
+    // Title
+    pdf.setFontSize(18);
+    pdf.setTextColor(34, 139, 34);
+    pdf.text("Fertilizer Recommendation Report", 20, 20);
+
+    pdf.setFontSize(12);
+    pdf.setTextColor(0, 0, 0);
+
+    pdf.text(`Crop: ${crop}`, 20, 40);
+    pdf.text(`Soil Type: ${soil}`, 20, 50);
+    pdf.text(`Soil pH: ${ph}`, 20, 60);
+    pdf.text(`NPK Ratio: ${rec.npk}`, 20, 70);
+    pdf.text(`Schedule: ${rec.schedule}`, 20, 80);
+    pdf.text(`Organic Alternative: ${rec.organic}`, 20, 90);
+    pdf.text(`${soilAdjust}`, 20, 100);
+
+    // Add Chart Image
+    const chartImage = chartCanvas.toDataURL("image/png", 1.0);
+    pdf.addImage(chartImage, "PNG", 20, 110, 170, 80);
+
+    pdf.save(`Fertilizer_Recommendation_${crop}.pdf`);
+  };
+}
+
+  // Initialize map
+  const map = L.map('map').setView([20.5937, 78.9629], 5); // default India center
+
+  // OpenStreetMap tiles
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '&copy; OpenStreetMap contributors'
+  }).addTo(map);
+
+  const markersLayer = L.layerGroup().addTo(map);
+
+  // 📍 Try to get user location
+  map.locate({ setView: true, maxZoom: 13 })
+    .on('locationfound', e => {
+      const { latitude, longitude } = e;
+      L.marker([latitude, longitude]).addTo(map)
+        .bindPopup('📍 You are here').openPopup();
+
+      // Fetch nearby services (mock data or your backend)
+      loadNearbyServices(latitude, longitude);
+    })
+    .on('locationerror', () => {
+      alert('Could not access location. Showing general map.');
+      loadNearbyServices(20.5937, 78.9629);
+    });
+
+  // Mocked nearby agricultural services
+  function loadNearbyServices(lat, lng) {
+    const services = [
+      { name: 'Green Fertilizer Store', type: 'fertilizer', lat: lat + 0.01, lng: lng + 0.01 },
+      { name: 'Central Mandi Market', type: 'mandi', lat: lat - 0.008, lng: lng + 0.012 },
+      { name: 'Fresh Cold Storage', type: 'coldStorage', lat: lat + 0.006, lng: lng - 0.009 },
+      { name: 'Krishi Kendra Office', type: 'krishiKendra', lat: lat - 0.007, lng: lng - 0.011 }
+    ];
+
+    markersLayer.clearLayers();
+    services.forEach(s => addServiceMarker(s));
+    addLegend();
+  }
+
+  // 🧭 Add markers with emojis
+  function addServiceMarker(svc) {
+    const emojiMap = {
+      fertilizer: '🛒',
+      mandi: '🏪',
+      coldStorage: '🧊',
+      krishiKendra: '🌾'
+    };
+    const marker = L.marker([svc.lat, svc.lng]).addTo(markersLayer);
+    marker.bindPopup(`<strong>${emojiMap[svc.type] || ''} ${svc.name}</strong><br>Type: ${svc.type}`);
+  }
+
+  // 🗺️ Add legend
+  function addLegend() {
+    const legend = L.control({ position: 'bottomleft' });
+    legend.onAdd = () => {
+      const div = L.DomUtil.create('div', 'legend');
+      div.innerHTML = `
+        <div><span>🛒</span> Fertilizer Shop</div>
+        <div><span>🏪</span> Mandi Market</div>
+        <div><span>🧊</span> Cold Storage</div>
+        <div><span>🌾</span> Krishi Kendra</div>
+      `;
+      return div;
+    };
+    legend.addTo(map);
+  }
 
   </script>
 </body>
