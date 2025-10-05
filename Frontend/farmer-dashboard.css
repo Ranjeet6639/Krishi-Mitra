@@ -147,9 +147,9 @@
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background: var(--accent, #198754);
+  background: none;
   border: none;
-  color: white;
+  color: rgb(0, 0, 0);
   font-size: 1.8em;
   cursor: pointer;
   padding: 6px 12px;
