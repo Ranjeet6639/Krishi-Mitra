@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact Us — Krishi Mitra</title>
+  <link rel="stylesheet" href="contact.css" />
+  <link rel="icon" href="assets/logo.png" />
+</head>
+<body>
+  <header>
+    <h1>🌾 Krishi Mitra</h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="contact.html" class="active">Contact</a>
+    </nav>
+  </header>
+
+  <section class="contact-container">
+    <div class="contact-info">
+      <h2>Contact Us</h2>
+      <p>We’d love to hear from you! Whether you have a question about our services, feedback, or partnership ideas — reach out to us.</p>
+      <div class="info-box">
+        <p><strong>✉️ Email:</strong> krishimitra.contact@gmail.com</p>
+      </div>
+    </div>
+
+    <form class="contact-form" action="" method="POST"> <!--Paste database linke here-->
+      <h3>Send us a Message</h3>
+      <div class="input-box">
+        <label>Full Name</label>
+        <input type="text" name="name" required />
+      </div>
+      <div class="input-box">
+        <label>Email</label>
+        <input type="email" name="email" required />
+      </div>
+      <div class="input-box">
+        <label>Subject</label>
+        <input type="text" name="subject" />
+      </div>
+      <div class="input-box">
+        <label>Your Message</label>
+        <textarea name="message" rows="5" required></textarea>
+      </div>
+      <button type="submit">Send Message</button>
+    </form>
+  </section>
+
+  <footer>
+    <p>© 2025 Krishi Mitra | All Rights Reserved</p>
+  </footer>
+</body>
+</html>
