@@ -1,0 +1,106 @@
+/* Krishi Mitra — Professional Trader Dashboard CSS (clean admin) */
+:root{
+  --green:#16a34a; --green-700:#15803d; --bg:#f6fbf7;
+  --muted:#6b7280; --card:#ffffff; --border:#e6eef0;
+  --radius:10px; --shadow: 0 8px 20px rgba(6,10,15,0.06);
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;background:var(--bg);color:#071124;font-size:14px}
+.wrap{display:flex;min-height:100vh}
+
+/* SIDEBAR */
+.sidebar{width:260px;padding:20px;background:var(--card);border-right:1px solid var(--border);display:flex;flex-direction:column;gap:18px}
+.brand{display:flex;align-items:center;gap:12px}
+.logo{width:46px;height:46px;background:var(--green);color:#fff;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:18px}
+.brand-title{font-weight:700}
+.brand-sub{font-size:12px;color:var(--muted)}
+.menu{display:flex;flex-direction:column;gap:8px}
+.menu-item{background:transparent;border:none;padding:10px;border-radius:8px;text-align:left;cursor:pointer;font-weight:600;color:#05303b}
+.menu-item:hover{background:rgba(22,163,74,0.06)}
+.menu-item.active{background:rgba(22,163,74,0.12);color:var(--green-700)}
+.sidebar-footer{margin-top:auto}
+
+/* MAIN */
+.main{flex:1;padding:20px 26px;overflow:auto}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:18px}
+.top-left{display:flex;align-items:center;gap:12px}
+.toggle-btn{display:inline-block;padding:8px;border-radius:8px;border:1px solid var(--border);background:transparent;cursor:pointer}
+.page-title{margin:0;font-size:20px}
+.page-sub{margin:0;color:var(--muted);font-size:13px}
+
+/* top-right actions */
+.top-right{display:flex;align-items:center;gap:12px}
+.search-wrap{min-width:260px}
+.input{padding:10px 12px;border-radius:8px;border:1px solid var(--border);background:transparent;outline:none;width:100%}
+.btn{padding:8px 12px;border-radius:8px;border:none;cursor:pointer}
+.btn-primary{background:var(--green);color:#fff}
+.btn-ghost{background:transparent;border:1px solid var(--border);padding:8px 12px;border-radius:8px}
+.small{padding:6px 8px;font-size:13px}
+.profile{display:flex;align-items:center;gap:10px;border:1px solid var(--border);padding:6px 8px;border-radius:8px}
+.avatar{width:38px;height:38px;background:var(--green);color:white;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:700}
+.info .name{font-weight:700}
+.info .role{font-size:12px;color:var(--muted)}
+
+/* PANELS / CARDS */
+.panels{display:flex;flex-direction:column;gap:18px}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.card{background:var(--card);border-radius:12px;padding:14px;border:1px solid var(--border);box-shadow:var(--shadow)}
+.card-title{color:var(--muted);font-size:13px}
+.card-value{font-weight:800;color:var(--green);font-size:20px;margin-top:6px}
+.card-note{font-size:12px;color:var(--muted);margin-top:6px}
+
+/* Grid two layout */
+.grid-two{display:grid;grid-template-columns:2fr 1fr;gap:16px}
+.panel-block{background:var(--card);border-radius:12px;padding:14px;border:1px solid var(--border);min-height:220px;display:flex;flex-direction:column}
+.panel-block.side{min-height:320px}
+.panel-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.header-actions{display:flex;gap:8px;align-items:center}
+
+/* tables */
+.table-wrap{overflow:auto;border-top:1px solid transparent}
+.table{width:100%;border-collapse:collapse;font-size:14px;margin-top:8px}
+.table thead th{font-weight:700;color:var(--muted);text-align:left;padding:10px;border-bottom:1px solid var(--border)}
+.table tbody td{padding:10px;border-bottom:1px solid #f3f6f6}
+.table tbody tr:hover{background:#fbfff9}
+
+/* Chart */
+.chart-wrap{height:220px;padding:6px}
+.mini-cards{display:flex;gap:8px;margin-top:12px}
+.mini{flex:1;background:#fbfff9;padding:10px;border-radius:8px;border:1px solid var(--border)}
+.mini-title{font-size:12px;color:var(--muted)}
+.mini-value{font-weight:700;margin-top:6px}
+
+/* quick list */
+.quick-list{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+
+/* AI CHAT */
+.ai-chat{position:fixed;right:24px;bottom:24px;width:380px;background:var(--card);border-radius:12px;border:1px solid var(--border);box-shadow:0 12px 40px rgba(2,8,23,0.12);display:flex;flex-direction:column;overflow:hidden}
+.ai-header{background:var(--green);color:white;padding:12px 14px;display:flex;justify-content:space-between;align-items:center}
+.ai-body{padding:12px;height:220px;overflow:auto}
+.ai-footer{display:flex;padding:10px;border-top:1px solid var(--border);gap:8px}
+.ai-footer input{flex:1;padding:10px;border-radius:8px;border:1px solid var(--border)}
+.ai-note{font-size:13px;color:var(--muted);margin-bottom:8px}
+.msg{padding:8px;border-radius:8px;margin-bottom:8px}
+.msg.bot{background:#f1fbf3;border:1px solid rgba(22,163,74,0.08)}
+
+/* MODAL */
+.modal{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(3,8,12,0.45)}
+.modal-card{width:420px;background:var(--card);border-radius:12px;padding:0;border:1px solid var(--border)}
+.modal-header{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-bottom:1px solid var(--border)}
+.modal-body{padding:14px;display:flex;flex-direction:column;gap:8px}
+.modal-actions{display:flex;justify-content:flex-end;gap:8px;padding:12px 14px}
+
+/* hidden helpers */
+.hidden{display:none}
+
+/* responsive */
+@media (max-width:1000px){
+  .sidebar{display:none}
+  .grid-two{grid-template-columns:1fr}
+  .cards{grid-template-columns:repeat(2,1fr)}
+}
+@media (max-width:600px){
+  .cards{grid-template-columns:1fr}
+  .top-right .search-wrap{display:none}
+}
