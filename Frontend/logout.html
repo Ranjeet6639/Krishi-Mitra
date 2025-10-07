@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Logout — Krishi Mitra</title>
+  <link rel="stylesheet" href="logout.css" />
+</head>
+<body>
+  <div class="logout-container">
+    <div class="logout-card">
+      <img src="https://cdn-icons-png.flaticon.com/512/1828/1828490.png" alt="Logout Icon" class="logout-icon" />
+      <h2>Logout Confirmation</h2>
+      <p>Are you sure you want to log out of <strong>Krishi Mitra</strong>?</p>
+      
+      <div class="btn-group">
+        <button class="btn cancel" onclick="cancelLogout()">Cancel</button>
+        <button class="btn confirm" onclick="confirmLogout()">Logout</button>
+      </div>
+
+      <div class="loader" id="loader" style="display:none;"></div>
+      <p id="message" style="display:none;">Logging out...</p>
+    </div>
+  </div>
+
+  <script>
+    function confirmLogout() {
+      document.querySelector('.btn-group').style.display = 'none';
+      document.getElementById('loader').style.display = 'block';
+      document.getElementById('message').style.display = 'block';
+
+      // Clear session/local storage
+      localStorage.clear();
+      sessionStorage.clear();
+
+      // Redirect to login page after 2.5 seconds
+      setTimeout(() => {
+        window.location.href="index.html"; // Adjust the path as needed
+      }, 2500);
+    }
+
+    function cancelLogout() {
+      // Go back to previous page
+      window.history.back();
+    }
+  </script>
+</body>
+</html>
