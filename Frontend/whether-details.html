@@ -13,8 +13,9 @@
     <button class="menu-toggle" onclick="toggleMenu()">☰</button>
     <div class="nav-links animate" id="navLinks">
   <a href="my-account.html">My Account</a>
-  <a href="whether-details.html">Whether Details</a>
-  <a href="">Schemes</a>
+  <a href="farmer-dashboard.html">Dashboard</a>
+  <a href="whether-details.html">Whether</a>
+  <a href="schemes.html">Schemes</a>
   <a href="">Logout</a>
 </div> </div>
 
@@ -192,6 +193,9 @@ function useMyLocation() {
   });
 }
 
+ function toggleMenu() {
+      document.getElementById("navLinks").classList.toggle("show");
+    }
 
   </script>
 

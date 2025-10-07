@@ -15,8 +15,8 @@
     <button class="menu-toggle" onclick="toggleMenu()">☰</button>
     <div class="nav-links animate" id="navLinks">
       <a href="my-account.html">My Account</a>
-      <a href="whether-details.html">Weather Details</a>
-      <a href="">Schemes</a>
+      <a href="whether-details.html">Weather</a>
+      <a href="schemes.html">Schemes</a>
       <a href="">Logout</a>
     </div>
   </div>
@@ -137,6 +137,16 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 
+<button id="chatbot-btn">💬</button>
+
+<div id="chatbot-window">
+  <div id="chat-header">Krishi Mitra AI</div>
+  <div id="chat-messages"></div>
+  <div id="chat-input">
+    <input type="text" id="user-input" placeholder="Type your question..." />
+    <button id="send-btn">Send</button>
+  </div>
+</div>
 
   <footer>© 2025 Krishi Mitra | Empowering Farmers with Technology 🌱</footer>
 
@@ -410,7 +420,54 @@ async function getFertilizerRecommendation() {
     };
     legend.addTo(map);
   }
+  // 💬 Chatbot Integration
 
+  const webhookURL = "http://localhost:5678/webhook/4b7ecef6-e2d7-48b2-beab-2b60158a7626/chat";
+
+  const chatBtn = document.getElementById('chatbot-btn');
+  const chatWindow = document.getElementById('chatbot-window');
+  const sendBtn = document.getElementById('send-btn');
+  const userInput = document.getElementById('user-input');
+  const chatMessages = document.getElementById('chat-messages');
+
+  chatBtn.addEventListener('click', () => {
+    chatWindow.style.display = chatWindow.style.display === 'none' ? 'flex' : 'none';
+  });
+
+  sendBtn.addEventListener('click', sendMessage);
+  userInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
+
+  async function sendMessage() {
+    const message = userInput.value.trim();
+    if (!message) return;
+
+    appendMessage('user', message);
+    userInput.value = '';
+
+    try {
+      const response = await fetch(webhookURL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message })
+      });
+
+      const data = await response.json();
+      appendMessage('bot', data.reply || "Sorry, I didn’t understand that.");
+    } catch (err) {
+      appendMessage('bot', "⚠️ Unable to connect to AI chatbot server.");
+      console.error(err);
+    }
+  }
+
+  function appendMessage(sender, text) {
+    const msg = document.createElement('div');
+    msg.className = sender === 'user' ? 'msg-user' : 'msg-bot';
+    msg.textContent = text;
+    chatMessages.appendChild(msg);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
+
+  
   </script>
 </body>
 </html>

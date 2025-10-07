@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Government Schemes — Krishi Mitra</title>
+<link rel="stylesheet" href="index.css">
+<link rel="stylesheet" href="scheme.css">
+</head>
+<body>
+<div class="navbar animate">
+  <h1 class="logo animate">Krishi Mitra</h1>
+  <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+  <div class="nav-links animate" id="navLinks">
+    <a href="my-account.html">My Account</a>
+    <a href="farmer-dashboard.html">Dashboard</a>
+    <a href="whether-details.html">Whether</a>
+    <a href="schemes.html">Schemes</a>
+    <a href="Logout.html">Logout</a>
+  </div>
+</div>
+
+<h2 class="page-title">Available Government Schemes for Farmers</h2>
+
+<div class="filter-bar">
+  <select id="categoryFilter" onchange="filterSchemes()">
+    <option value="all">All Categories</option>
+    <option value="crop">Crop Support</option>
+    <option value="irrigation">Irrigation</option>
+    <option value="insurance">Insurance</option>
+    <option value="subsidy">Subsidy</option>
+    <option value="loan">Loan & Credit</option>
+  </select>
+  <input type="text" id="searchInput" placeholder="Search by scheme name..." oninput="filterSchemes()">
+</div>
+
+<div class="scheme-grid" id="schemeGrid">
+  <!-- Schemes dynamically inserted here -->
+</div>
+
+<script>
+const schemes = [
+  {
+    title: "Pradhan Mantri Fasal Bima Yojana (PMFBY)",
+    category: "insurance",
+    desc: "Crop insurance scheme to support farmers facing crop loss due to natural calamities, pests, or diseases.",
+    department: "Ministry of Agriculture",
+    link: "https://pmfby.gov.in/"
+  },
+  {
+    title: "Kisan Credit Card (KCC)",
+    category: "loan",
+    desc: "Provides short-term credit support to farmers for cultivation and other agricultural needs.",
+    department: "NABARD / Banks",
+    link: "https://pmmodiyojana.in/kisan-credit-card/"
+  },
+  {
+    title: "PM-KISAN Samman Nidhi",
+    category: "subsidy",
+    desc: "Provides ₹6,000 per year in three equal installments to all farmer families having cultivable land.",
+    department: "Department of Agriculture & Farmers Welfare",
+    link: "https://pmkisan.gov.in/"
+  },
+  {
+    title: "Per Drop More Crop (Micro Irrigation Fund)",
+    category: "irrigation",
+    desc: "Promotes efficient water usage by providing subsidy for drip and sprinkler irrigation systems.",
+    department: "NABARD / Ministry of Agriculture",
+    link: "https://pmksy.gov.in/"
+  },
+  {
+    title: "National Horticulture Mission (NHM)",
+    category: "crop",
+    desc: "Supports production and post-harvest management of horticultural crops through subsidies and training.",
+    department: "Ministry of Agriculture",
+    link: "https://nhb.gov.in/"
+  }
+];
+
+function toggleMenu() {
+  const navLinks = document.getElementById('navLinks');
+  navLinks.style.display = navLinks.style.display === 'block' ? 'none' : 'block';
+}
+
+function displaySchemes(list) {
+  const grid = document.getElementById('schemeGrid');
+  grid.innerHTML = '';
+  list.forEach(s => {
+    const card = document.createElement('div');
+    card.className = 'scheme-card';
+    card.innerHTML = `
+      <div class="scheme-title">${s.title}</div>
+      <div class="scheme-meta">${s.department}</div>
+      <div class="scheme-desc">${s.desc}</div>
+      <button class="scheme-btn" onclick="window.open('${s.link}','_blank')">Apply / Learn More</button>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+function filterSchemes() {
+  const category = document.getElementById('categoryFilter').value;
+  const keyword = document.getElementById('searchInput').value.toLowerCase();
+  const filtered = schemes.filter(s => 
+    (category === 'all' || s.category === category) &&
+    s.title.toLowerCase().includes(keyword)
+  );
+  displaySchemes(filtered);
+}
+
+// Initialize
+displaySchemes(schemes);
+
+// Menu toggle
+    function toggleMenu() {
+      document.getElementById("navLinks").classList.toggle("show");
+    }
+</script>
+</body>
+</html>

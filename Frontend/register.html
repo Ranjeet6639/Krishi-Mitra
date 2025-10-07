@@ -183,6 +183,7 @@
     form.addEventListener("submit", function(e) {
       e.preventDefault();
       errorMsg.textContent = "";
+
       //email,mobile,password,pincode verification
       const email = document.getElementById("email").value;
       const mobile = document.getElementById("mobile").value;
@@ -214,6 +215,7 @@
       alert("Registration Successful!");
       form.reset();
     });
+    
      //State->District->Taluka->Village dropdown logic
      const stateSelect = document.getElementById("state");
   const districtSelect = document.getElementById("district");

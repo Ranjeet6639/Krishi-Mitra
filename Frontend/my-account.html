@@ -62,7 +62,7 @@
     <button class="menu-toggle" onclick="toggleMenu()">☰</button>
     <div class="nav-links animate" id="navLinks">
   <a href="my-account.html">My Account</a>
-  <a href="whether-details.html">Whether Details</a>
+  <a href="whether-details.html">Whether</a>
   <a href="">Schemes</a>
   <a href="">Logout</a>
 </div> </div>
@@ -129,6 +129,7 @@
 </div>
 
 <script>
+  
 function toggleMenu() {
   const navLinks = document.getElementById('navLinks');
   navLinks.style.display = navLinks.style.display === 'block' ? 'none' : 'block';
@@ -199,11 +200,31 @@ function toggleMenu() {
     cancelBtn.style.display = on?'inline-block':'none';
   }
 
+  // ---- OTP Verification ----
+  function generateOTP() {
+    return Math.floor(100000 + Math.random() * 900000).toString();
+  }
+
+  async function verifyField(fieldName, newValue) {
+    const otp = generateOTP();
+    alert(`(Simulated) OTP sent to ${fieldName === 'email' ? 'email' : 'phone'}: ${otp}`);
+    const entered = prompt(`Enter the OTP sent to your ${fieldName}:`);
+    if (entered === otp) {
+      alert(`${fieldName === 'email' ? 'Email' : 'Phone number'} verified successfully!`);
+      return true;
+    } else {
+      alert(`Verification failed for ${fieldName}. Please try again.`);
+      return false;
+    }
+  }
+
   editBtn.addEventListener('click',()=> setEditMode(true));
   cancelBtn.addEventListener('click',()=>{applyToUI(saved); setEditMode(false);});
-  saveBtn.addEventListener('click',()=>{
+
+  saveBtn.addEventListener('click',async ()=>{
     if(!inputs.email.checkValidity()){alert("Enter a valid email"); return;}
     if(!inputs.phone.checkValidity()){alert("Enter a valid phone number"); return;}
+
     const newData = {
       fullName: inputs.fullName.value,
       role: inputs.role.value,
@@ -212,6 +233,17 @@ function toggleMenu() {
       address: inputs.address.value,
       pincode: inputs.pincode.value
     };
+
+    // Check if phone/email changed
+    if (newData.email !== saved.email) {
+      const ok = await verifyField('email', newData.email);
+      if (!ok) return;
+    }
+    if (newData.phone !== saved.phone) {
+      const ok = await verifyField('phone', newData.phone);
+      if (!ok) return;
+    }
+
     localStorage.setItem(storageKey, JSON.stringify(newData));
     saved = newData;
     applyToUI(saved);
@@ -224,6 +256,7 @@ function toggleMenu() {
   load();
   setEditMode(false);
 })();
+
 </script>
 
 </body>
