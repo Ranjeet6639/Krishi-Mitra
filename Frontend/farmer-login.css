@@ -90,3 +90,28 @@
       text-decoration: none;
       color: #0073e6;
     }
+
+     /* 🌿 Success Popup Style */
+  .popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.9);
+    background: #e8fbe8;
+    color: #155724;
+    border: 2px solid #28a745;
+    padding: 20px 30px;
+    border-radius: 15px;
+    font-size: 18px;
+    font-weight: 500;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    text-align: center;
+    opacity: 0;
+    transition: all 0.4s ease;
+    z-index: 9999;
+  }
+
+  .popup.show {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }

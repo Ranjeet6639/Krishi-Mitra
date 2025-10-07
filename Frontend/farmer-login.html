@@ -28,5 +28,21 @@
       <p><a href="#">Forgot password?</a></p>
     </div>
   </div>
+  <div id="popup" class="popup">Login successful! Redirecting to your dashboard...</div>
+<script>
+  const form = document.querySelector("form");
+  const popup = document.getElementById("popup");
+
+  form.addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    popup.classList.add("show");
+
+    setTimeout(() => {
+      popup.classList.remove("show");
+      window.location.href = "farmer-dashboard.html";
+    }, 2000); // 2-second delay before redirect
+  });
+</script>
 </body>
 </html>

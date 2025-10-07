@@ -169,7 +169,7 @@
     </form>
   </div>
 
-  
+  <div id="popup" class="popup">Registration successful! Redirecting to login...</div>
 
   <script>
      // Menu toggle
@@ -377,6 +377,21 @@
     otherOption.textContent = "Other";
     selectElement.appendChild(otherOption);
   }
+
+  const registrationForm = document.querySelector("form");
+  const popup = document.getElementById("popup");
+
+  registrationForm.addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    popup.classList.add("show");
+
+    setTimeout(() => {
+      popup.classList.remove("show");
+      window.location.href = "farmer-login.html";
+    }, 2000); // 2-second delay before redirect
+  });
+  
   </script>
 </body>
 </html>
