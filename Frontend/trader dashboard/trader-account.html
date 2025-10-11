@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Account | Trader</title>
+  <style>
+    /* ---------- General ---------- */
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #f5f6fa;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .account-container {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      padding: 30px 25px;
+      max-width: 400px;
+      width: 90%;
+      box-sizing: border-box;
+    }
+
+    label {
+      display: block;
+      margin: 10px 0 4px;
+      font-weight: 500;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+
+    textarea { resize: none; }
+
+    .error {
+      color: red;
+      font-size: 13px;
+      margin-top: 4px;
+    }
+
+    .verified {
+      color: green;
+      font-weight: 500;
+      cursor: default;
+    }
+
+    .verify-btn {
+      background: #007bff;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 13px;
+    }
+
+    .verify-btn:disabled {
+      background: gray;
+      cursor: not-allowed;
+    }
+
+    .save-btn {
+      background: #2e8b57;
+      color: white;
+      border: none;
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      margin-top: 20px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 500;
+    }
+
+    .save-btn:hover {
+      background: #256d46;
+    }
+
+    /* ---------- Profile Image ---------- */
+    .profile-img {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      border: 2px dashed #2e8b57;
+      display: grid;
+      place-items: center;
+      margin: 0 auto 10px;
+      color: #777;
+      font-size: 14px;
+      background-color: #fafafa;
+      overflow: hidden;
+    }
+
+    .profile-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+
+    .change-photo {
+      display: block;
+      margin: 10px auto 20px;
+      background: #2e8b57;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .change-photo:hover {
+      background: #256d46;
+    }
+
+    /* ---------- Flex containers ---------- */
+    .flex-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    @media(max-width: 420px){
+      .flex-row { flex-direction: column; align-items: stretch; }
+      .flex-row input { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="account-container">
+    <!-- Profile Image -->
+    <div class="profile-img">
+      <img id="profilePreview" src="" alt="No Image">
+    </div>
+    <input type="file" id="photoInput" accept="image/*" style="display:none;">
+    <button class="change-photo" onclick="document.getElementById('photoInput').click()">Change Photo</button>
+
+    <!-- Full Name -->
+    <label>Full Name</label>
+    <input type="text" id="fullName" placeholder="Enter full name">
+    <div id="nameError" class="error"></div>
+
+    <!-- Email -->
+    <label>Email</label>
+    <div class="flex-row">
+      <input type="email" id="email" placeholder="Enter email">
+      <button id="emailStatus" class="verified">Verified ✅</button>
+    </div>
+    <div id="emailError" class="error"></div>
+
+    <!-- Phone -->
+    <label>Phone Number</label>
+    <div class="flex-row">
+      <input type="tel" id="phone" placeholder="Enter phone number">
+      <button id="verifyPhoneNumber" class="verify-btn">Verify</button>
+    </div>
+    <div id="phoneError" class="error"></div>
+
+    <!-- Address -->
+    <label>Address</label>
+    <textarea id="address" placeholder="Enter address" rows="2"></textarea>
+
+    <!-- Save Button -->
+    <button class="save-btn" onclick="saveChanges()">Save Changes</button>
+  </div>
+
+  <script>
+    const emailInput = document.getElementById('email');
+    const phoneInput = document.getElementById('phone');
+    const nameInput = document.getElementById('fullName');
+    const emailStatus = document.getElementById('emailStatus');
+    const photoInput = document.getElementById('photoInput');
+    const profilePreview = document.getElementById('profilePreview');
+
+    let emailVerified = true;
+    let phoneVerified = true;
+
+    // Simulate user data
+    emailInput.value = "";
+    phoneInput.value = "";
+    nameInput.value = "";
+
+    // ---------- Profile Image Preview ----------
+    photoInput.addEventListener("change", function() {
+      const file = this.files[0];
+      if(file){
+        const reader = new FileReader();
+        reader.onload = () => profilePreview.src = reader.result;
+        reader.readAsDataURL(file);
+      }
+    });
+
+    // ---------- Email Verification with OTP + Countdown ----------
+function isValidEmail(email) {
+  const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return re.test(email);
+}
+
+let emailGeneratedOTP = null;
+let emailCountdownTimer = null;
+const emailVerifyBtn = document.getElementById('emailStatus');
+
+// Create OTP input dynamically
+const emailOTPInput = document.createElement('input');
+emailOTPInput.type = 'text';
+emailOTPInput.id = 'emailOTPInput';
+emailOTPInput.placeholder = 'Enter Email OTP';
+emailOTPInput.maxLength = 6;
+emailOTPInput.style = `
+  display:none;
+  margin-top:8px;
+  width:100%;
+  padding:8px;
+  border:1px solid #ccc;
+  border-radius:6px;
+  font-size:14px;
+  box-sizing:border-box;
+`;
+
+// Insert OTP field right below email field
+document.querySelector('#email').insertAdjacentElement('afterend', emailOTPInput);
+
+// Email change event — reset verification
+emailInput.addEventListener("input", () => {
+  emailVerified = false;
+  emailVerifyBtn.textContent = "Verify";
+  emailVerifyBtn.classList.remove("verified");
+  emailVerifyBtn.classList.add("verify-btn");
+  emailVerifyBtn.disabled = false;
+  emailVerifyBtn.style.background = "#007bff";
+  clearInterval(emailCountdownTimer);
+  emailOTPInput.style.display = "none";
+});
+
+// Countdown timer function
+function startEmailCountdown(seconds) {
+  let remaining = seconds;
+  emailVerifyBtn.disabled = true;
+  emailVerifyBtn.style.background = "gray";
+  emailVerifyBtn.textContent = `Resend in ${remaining}s`;
+
+  emailCountdownTimer = setInterval(() => {
+    remaining--;
+    emailVerifyBtn.textContent = `Resend in ${remaining}s`;
+
+    if (remaining <= 0) {
+      clearInterval(emailCountdownTimer);
+      emailVerifyBtn.disabled = false;
+      emailVerifyBtn.style.background = "#007bff";
+      emailVerifyBtn.textContent = "Resend OTP";
+    }
+  }, 1000);
+}
+
+// Verify button click
+emailVerifyBtn.addEventListener("click", () => {
+  if (emailVerified) return; // already verified
+
+  const emailValue = emailInput.value.trim();
+  if (!isValidEmail(emailValue)) {
+    alert("Please enter a valid email address!");
+    return;
+  }
+
+  // Simulate sending OTP
+  emailGeneratedOTP = Math.floor(100000 + Math.random() * 900000);
+  alert("OTP sent to " + emailValue + ": " + emailGeneratedOTP); // testing display
+
+  emailOTPInput.style.display = 'block';
+  emailOTPInput.value = "";
+  emailOTPInput.focus();
+
+  startEmailCountdown(30); // 30s timer
+});
+
+// OTP input validation
+emailOTPInput.addEventListener("input", () => {
+  const entered = emailOTPInput.value.trim();
+
+  if (entered.length === 6) {
+    if (entered === emailGeneratedOTP.toString()) {
+      alert("✅ Email verified successfully!");
+      emailVerified = true;
+      emailOTPInput.style.display = 'none';
+      emailVerifyBtn.textContent = "Verified ✅";
+      emailVerifyBtn.classList.remove("verify-btn");
+      emailVerifyBtn.classList.add("verified");
+      emailVerifyBtn.disabled = true;
+      emailVerifyBtn.style.background = "green";
+      clearInterval(emailCountdownTimer);
+    } else {
+      alert("❌ Incorrect OTP. Please try again.");
+      emailOTPInput.value = "";
+      emailOTPInput.focus();
+    }
+  }
+});
+
+// ---------- Phone Verification with OTP + Countdown ----------
+function isValidPhone(phone) {
+  // Accepts only 0-10 digit numbers
+  const re = /^[6-9]\d{9}$/;
+  return re.test(phone);
+}
+
+const verifyBtn = document.getElementById('verifyPhoneNumber');
+let generatedOTP = null;
+let countdownTimer = null;
+
+// Create OTP input dynamically
+const otpInput = document.createElement('input');
+otpInput.type = 'text';
+otpInput.id = 'otpInput';
+otpInput.placeholder = 'Enter OTP';
+otpInput.maxLength = 6;
+otpInput.style = `
+  display:none;
+  margin-top:8px;
+  width:100%;
+  padding:8px;
+  border:1px solid #ccc;
+  border-radius:6px;
+  font-size:14px;
+  box-sizing:border-box;
+`;
+
+// Insert OTP input below phone field
+document.querySelector('#phone').insertAdjacentElement('afterend', otpInput);
+
+// Countdown function
+function startCountdown(seconds) {
+  let remaining = seconds;
+  verifyBtn.disabled = true;
+  verifyBtn.style.background = "gray";
+  verifyBtn.textContent = `Resend in ${remaining}s`;
+
+  countdownTimer = setInterval(() => {
+    remaining--;
+    verifyBtn.textContent = `Resend in ${remaining}s`;
+
+    if (remaining <= 0) {
+      clearInterval(countdownTimer);
+      verifyBtn.disabled = false;
+      verifyBtn.style.background = "#007bff";
+      verifyBtn.textContent = "Resend OTP";
+    }
+  }, 1000);
+}
+
+// OTP Send
+verifyBtn.addEventListener("click", () => {
+  const phone = phoneInput.value.trim();
+
+  if (phone === "") {
+    alert("Please enter your phone number first!");
+    return;
+  }
+
+  if (!isValidPhone(phone)) {
+    alert("Please enter a valid phone number (only digits, 0-10 characters).");
+    return;
+  }
+
+  // Simulate sending OTP
+  generatedOTP = Math.floor(100000 + Math.random() * 900000); // 6-digit OTP
+  alert("OTP sent to " + phone + ": " + generatedOTP); // (for testing)
+
+  otpInput.style.display = 'block';
+  otpInput.value = "";
+  otpInput.focus();
+
+  startCountdown(30); // 30 seconds timer before resend
+});
+
+// OTP Verification
+otpInput.addEventListener("input", () => {
+  const entered = otpInput.value.trim();
+
+  if (entered.length === 6) {
+    if (entered === generatedOTP.toString()) {
+      alert("✅ Phone verified successfully!");
+      phoneVerified = true;
+      otpInput.style.display = 'none';
+      verifyBtn.textContent = "Verified ✅";
+      verifyBtn.disabled = true;
+      verifyBtn.style.background = "green";
+      clearInterval(countdownTimer);
+    } else {
+      alert("❌ Incorrect OTP. Please try again.");
+      otpInput.value = "";
+      otpInput.focus();
+    }
+  }
+});
+
+
+
+    // ---------- Save Changes ----------
+    function saveChanges() {
+  let valid = true;
+
+  document.getElementById("nameError").textContent = "";
+  document.getElementById("emailError").textContent = "";
+  document.getElementById("phoneError").textContent = "";
+
+  if (nameInput.value.trim() === "") {
+    document.getElementById("nameError").textContent = "Full name is required.";
+    valid = false;
+  }
+  if (emailInput.value.trim() === "") {
+    document.getElementById("emailError").textContent = "Email is required.";
+    valid = false;
+  } else if (!emailVerified) {
+    document.getElementById("emailError").textContent = "Please verify your email.";
+    valid = false;
+  }
+  if (phoneInput.value.trim() === "") {
+    document.getElementById("phoneError").textContent = "Phone number is required.";
+    valid = false;
+  } else if (!phoneVerified) {
+    document.getElementById("phoneError").textContent = "Please verify your phone number.";
+    valid = false;
+  }
+
+  if (!valid) return;
+
+  // Get profile image (base64)
+  let profileImage = "";
+  const imgTag = profilePreview.querySelector("img");
+  if (imgTag) profileImage = imgTag.src;
+
+  // Save all data locally
+  const userData = {
+    fullName: nameInput.value.trim(),
+    email: emailInput.value.trim(),
+    phone: phoneInput.value.trim(),
+    address: document.getElementById("address").value.trim(),
+    profilePhoto: profileImage
+  };
+
+  localStorage.setItem("userProfile", JSON.stringify(userData));
+
+  alert("✅ Profile updated successfully!");
+
+  // Redirect to dashboard
+  window.location.href = "/Frontend/trader dashboard/trader-dashboard.html";
+}
+    
+  </script>
+</body>
+</html>

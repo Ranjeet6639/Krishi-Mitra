@@ -1,427 +1,138 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Trader Dashboard | Krishi Mitra</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-  <style>
-    :root{
-      --bg-0: #071026;
-      --bg-1: #0b1221;
-      --card: #0b1220;
-      --muted:#9aa4b2;
-      --accent:#0ea5a4;
-      --accent-2:#7c3aed;
-      --glass: rgba(255,255,255,0.04);
-      --radius:12px;
-      --gap:18px;
-      --maxw:1200px;
-      --text: #e6eef6;
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%;margin:0;background:linear-gradient(180deg,var(--bg-0) 0%, var(--bg-1) 100%);color:var(--text);font-family:'Poppins',sans-serif}
-    a{color:inherit}
-    /* header */
-    header.site-header{
-      position:sticky;top:0;z-index:40;
-      background: linear-gradient(90deg, #111c33, #0f1730);
-      display:flex;align-items:center;justify-content:space-between;
-      padding:12px 20px;gap:12px;box-shadow:0 2px 12px rgba(1,6,20,0.5);
-    }
-    .header-left{display:flex;align-items:center;gap:20px}
-    .brand-logo{
-      display:flex;align-items:center;gap:12px;
-    }
-    .brand-icon{
-      width:44px;height:44px;border-radius:9px;
-      display:grid;place-items:center;font-weight:700;
-      background:linear-gradient(135deg,var(--accent),var(--accent-2));
-      color:#fff;font-size:15px;
-    }
-    .brand-title{line-height:1}
-    .brand-title h1{margin:0;font-size:16px;font-weight:600}
-    .brand-title p{margin:0;font-size:12px;color:var(--muted)}
-
-    /* top nav links */
-    nav.top-nav{
-      display:flex;gap:8px;align-items:center;
-    }
-    nav.top-nav a{
-      display:inline-flex;align-items:center;gap:8px;padding:8px 10px;border-radius:10px;color:var(--muted);text-decoration:none;font-size:14px;
-    }
-    nav.top-nav a.active, nav.top-nav a:hover{background:var(--glass);color:#fff}
-
-    /* hamburger for mobile */
-    .hamburger{display:none;background:transparent;border:0;color:var(--muted);font-size:20px;padding:8px;border-radius:8px;cursor:pointer}
-    .mobile-menu{display:none;position:fixed;top:64px;left:12px;right:12px;background:#071428;padding:12px;border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,0.6)}
-
-    /* chatbot */
-    .header-right{display:flex;align-items:center;gap:12px}
-    .chatbot{
-      background:#101b32;border-radius:12px;padding:10px;display:flex;flex-direction:column;align-items:flex-start;max-width:240px;min-width:180px;
-    }
-    .chatbot h4{margin:0 0 8px 0;color:var(--accent-2);font-size:15px}
-    .chatbot p{margin:0 0 8px 0;color:#b7c3d6;font-size:12px}
-    .chatbot input{width:100%;border:none;padding:8px;border-radius:8px;background:#0f172a;color:var(--text);outline:none}
-    /* small chat toggle button for mobile */
-    .chat-toggle{display:none;background:linear-gradient(90deg,var(--accent),var(--accent-2));border:0;padding:8px 10px;border-radius:10px;color:#041010;font-weight:700;cursor:pointer}
-
-    /* layout */
-    .wrap{max-width:var(--maxw);margin:18px auto;padding:0 18px}
-    .app{display:grid;grid-template-columns:1fr 320px;gap:var(--gap);align-items:start;padding-top:18px}
-    .main{min-height:60vh}
-    .topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;gap:12px}
-    .search{display:flex;align-items:center;gap:10px;background:var(--card);padding:10px;border-radius:12px;min-width:260px}
-    .search input{background:transparent;border:0;outline:none;color:inherit;font-size:14px}
-    .top-actions{display:flex;gap:10px;align-items:center}
-    .icon-btn{background:var(--card);padding:8px;border-radius:10px;cursor:pointer}
-    .add-btn{background:linear-gradient(90deg,var(--accent),var(--accent-2));padding:10px 12px;border-radius:10px;border:0;color:#ffffff;font-weight:700;cursor:pointer}
-
-    /* cards */
-    .cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
-    .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.02));padding:18px;border-radius:12px;box-shadow:0 6px 18px rgba(2,6,23,0.6)}
-    .card .k{font-size:12px;color:var(--muted)}
-    .card .v{font-size:20px;font-weight:700;margin-top:6px}
-
-    .grid{display:grid;grid-template-columns:2fr 1fr;gap:12px}
-    .panel{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.02));padding:16px;border-radius:12px;min-height:140px}
-    table{width:100%;border-collapse:collapse;font-size:13px}
-    thead th{color:var(--muted);text-align:left;padding:8px 6px;border-bottom:1px solid rgba(255,255,255,0.03)}
-    tbody td{padding:10px 6px;border-bottom:1px solid rgba(255,255,255,0.03)}
-    .pill{background:rgba(255,255,255,0.03);padding:6px 8px;border-radius:999px;font-size:12px}
-
-    aside.right{position:sticky;top:84px;height:calc(100vh - 120px);overflow:auto;padding:10px}
-    .widget{background:var(--card);padding:12px;border-radius:12px;margin-bottom:12px}
-
-    /* modal */
-    .modal-back{position:fixed;inset:0;background:rgba(2,6,23,0.6);display:none;align-items:center;justify-content:center;padding:20px}
-    .modal{width:100%;max-width:600px;background:#071022;padding:18px;border-radius:12px}
-    .field{display:flex;flex-direction:column;margin-bottom:10px}
-    .field input,.field textarea{background:transparent;border:1px solid rgba(255,255,255,0.06);padding:10px;border-radius:8px;color:inherit}
-
-    /* utilities */
-    .flex{display:flex;gap:10px;align-items:center}
-    .muted{color:var(--muted)}
-    button:focus, input:focus, a:focus{outline:2px solid rgba(124,58,237,0.18);outline-offset:2px;transition:outline 0.12s}
-
-    /* responsive */
-    @media (max-width:1100px){
-      .cards{grid-template-columns:repeat(2,1fr)}
-      .grid{grid-template-columns:1fr}
-      .app{grid-template-columns:1fr 300px}
-    }
-    @media (max-width:880px){
-      nav.top-nav{display:none}
-      .hamburger{display:inline-flex}
-      .chat-toggle{display:inline-flex}
-      .chatbot{display:none}
-      .mobile-menu{display:none}
-      aside.right{position:static;height:auto}
-      .app{grid-template-columns:1fr}
-      .cards{grid-template-columns:1fr}
-    }
-    @media (max-width:520px){
-      .brand-title h1{font-size:14px}
-      .search{min-width:140px}
-    }
-
-    /* small scrollbar */
-    ::-webkit-scrollbar{width:10px;height:10px}
-    ::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.03);border-radius:10px}
-  </style>
+  <link rel="stylesheet" href="/Frontend/trader dashboard/trader-dashboard.css" />
 </head>
 <body>
-  <header class="site-header" role="banner">
-    <div class="header-left">
-      <div class="brand-logo" aria-hidden="false">
-        <div class="brand-icon" aria-hidden="true">KM</div>
-        <div class="brand-title">
-          <h1>Krishi Mitra</h1>
-          <p>Trader Dashboard</p>
-        </div>
-      </div>
 
-      <!-- top nav (hidden on small screens) -->
-      <nav class="top-nav" role="navigation" aria-label="Primary">
-        <a href="#" class="active" aria-current="page">🏠 Dashboard</a>
-        <a href="#">👨‍🌾 Traders</a>
-        <a href="#">📦 Listings</a>
-        <a href="#">🧾 Orders</a>
-        <a href="#">📊 Analytics</a>
-        <a href="#">💬 Messages</a>
-        <a href="#">⚙️ Settings</a>
-      </nav>
-
-      <!-- hamburger for mobile -->
-      <button class="hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false">☰</button>
-    </div>
-
-    <div class="header-right">
-      <!-- chat for large screens -->
-      <div class="chatbot" id="chatbot" aria-live="polite">
-        <h4>AI Chatbot (Demo)</h4>
-        <p>Ask: "top listings" or "orders today"</p>
-        <input type="text" placeholder="Type a question" aria-label="Chat input (demo UI only)" />
-      </div>
-
-      <!-- chat toggle for mobile -->
-      <button class="chat-toggle" id="chatToggle" aria-expanded="false" aria-controls="mobileChat">Chat</button>
-    </div>
+  <header>
+    <h1>🌾 Krishi Mitra – Trader Dashboard</h1>
+    <a href="/Frontend/trader dashboard/trader-account.html" class="navbar">My Account</a>
+      <a href="#" class="navbar">📦 My Orders</a>
+      <a href="#" class="navbar">🔍 Browse Produce</a>
+      <a href="#" class="navbar">💬 Chat with Farmers</a>
+      <a href="#" class="navbar">📈 Analytics</a>
+    <button onclick="logout()">Logout</button>
   </header>
 
-  <!-- mobile menu (appears when hamburger toggled) -->
-  <div id="mobileMenu" class="mobile-menu" role="dialog" aria-modal="true" style="display:none">
-    <nav style="display:flex;flex-direction:column;gap:8px">
-      <a href="#">🏠 Dashboard</a>
-      <a href="#">👨‍🌾 Traders</a>
-      <a href="#">📦 Listings</a>
-      <a href="#">🧾 Orders</a>
-      <a href="#">📊 Analytics</a>
-      <a href="#">💬 Messages</a>
-      <a href="#">⚙️ Settings</a>
-    </nav>
+  <div class="dashboard">
+     <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+      <div class="sidebar">
+  <img id="sidebar-profile img" src="images/default.png" alt="Trader Photo" class="profile-photo">
+  <h3 id="profile-card h3">Trader Name</h3>
+  <p><strong>Email:</strong> <span id="traderEmail"></span></p>
+  <p><strong>Phone:</strong> <span id="traderPhone"></span></p>
+</div>
   </div>
 
-  <!-- mobile chat panel -->
-  <div id="mobileChat" class="mobile-menu" style="display:none">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-      <strong>AI Chatbot (Demo)</strong>
-      <button id="closeMobileChat" style="background:transparent;border:0;color:var(--muted)">✕</button>
-    </div>
-    <p style="color:#b7c3d6;margin:0 0 8px">Ask: "top listings" or "orders today"</p>
-    <input type="text" placeholder="Type a question" style="width:100%;padding:8px;border-radius:8px;border:none;background:#0f172a;color:var(--text)" />
-  </div>
-
-  <div class="wrap">
-    <div class="app" role="main">
-      <main class="main">
-        <div class="topbar" role="region" aria-label="Quick actions">
-          <div style="display:flex;gap:12px;align-items:center">
-            <div class="search" role="search" aria-label="Search">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style="opacity:0.8"><path d="M21 21l-4.35-4.35" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="11" cy="11" r="6" stroke="currentColor" stroke-width="1.5"/></svg>
-              <input placeholder="Search traders, listings, orders..." aria-label="Search input" />
-            </div>
-            <div class="muted">Last sync: Oct 7, 2025</div>
-          </div>
-
-          <div class="top-actions">
-            <div class="icon-btn" title="Notifications" role="button" aria-label="Notifications">🔔</div>
-            <div class="icon-btn" title="Messages" role="button" aria-label="Messages">✉️</div>
-            <button class="add-btn" id="openAdd" aria-controls="modalBack">+ Add Listing</button>
-            <div style="display:flex;gap:8px;align-items:center">
-              <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='36' height='36'><rect rx='8' width='36' height='36' fill='%237c3aed'/><text x='50%' y='57%' font-size='16' font-family='Arial' text-anchor='middle' fill='white'>TR</text></svg>" alt="avatar" style="border-radius:8px" />
-            </div>
-          </div>
-        </div>
-
-        <section class="cards" aria-label="Top metrics">
-          <div class="card"><div class="k">Total Traders</div><div class="v">1,248</div><div class="muted" style="margin-top:8px">+24 in last 7 days</div></div>
-          <div class="card"><div class="k">Active Listings</div><div class="v">562</div><div class="muted" style="margin-top:8px">+8 today</div></div>
-          <div class="card"><div class="k">Today's Orders</div><div class="v">78</div><div class="muted" style="margin-top:8px">Peak hour: 11:00</div></div>
-          <div class="card"><div class="k">Revenue (30d)</div><div class="v">₹1,24,800</div><div class="muted" style="margin-top:8px">Avg order: ₹1,620</div></div>
-        </section>
-
-        <div class="grid">
-          <div>
-            <div class="panel" aria-label="Revenue chart">
-              <h4 style="margin-top:0">Revenue (last 12 days)</h4>
-              <canvas id="revChart" width="800" height="200" style="width:100%;height:160px;border-radius:10px;background:linear-gradient(180deg, rgba(0,0,0,0.02), transparent)"></canvas>
-              <div style="display:flex;justify-content:space-between;margin-top:12px">
-                <div class="muted">Visitor: 3.2k</div>
-                <div class="muted">Conversion: 2.4%</div>
-              </div>
-            </div>
-
-            <div class="panel" style="margin-top:12px">
-              <h4 style="margin:0 0 12px 0">Recent Orders</h4>
-              <table aria-label="Recent orders table">
-                <thead>
-                  <tr><th>Order</th><th>Trader</th><th>Items</th><th>Value</th><th>Status</th></tr>
-                </thead>
-                <tbody id="ordersTable">
-                  <!-- rows injected by JS -->
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          <aside class="right" aria-label="Right column widgets">
-            <div class="widget">
-              <h4 style="margin:0 0 8px 0">Quick Actions</h4>
-              <div class="flex" style="flex-direction:column">
-                <button class="add-btn" id="quickAdd">Create Listing</button>
-                <button class="icon-btn">Export CSV</button>
-                <button class="icon-btn">Send Broadcast</button>
-              </div>
-            </div>
-
-            <div class="widget">
-              <h4 style="margin:0 0 8px 0">Top Traders</h4>
-              <div style="display:flex;flex-direction:column;gap:8px">
-                <div class="flex" style="justify-content:space-between"><div><strong>R. Kumar</strong><div class="muted" style="font-size:12px">Palak & Veg</div></div><div class="pill">₹24,600</div></div>
-                <div class="flex" style="justify-content:space-between"><div><strong>S. Mehta</strong><div class="muted" style="font-size:12px">Grains</div></div><div class="pill">₹19,200</div></div>
-                <div class="flex" style="justify-content:space-between"><div><strong>FarmKart</strong><div class="muted" style="font-size:12px">Multi-producer</div></div><div class="pill">₹17,900</div></div>
-              </div>
-            </div>
-
-            <div class="widget">
-              <h4 style="margin:0 0 8px 0">Profile</h4>
-              <div class="flex" style="justify-content:space-between">
-                <div>
-                  <div style="font-weight:700">Admin</div>
-                  <div class="muted">admin@krishimitra.example</div>
-                </div>
-                <div style="display:flex;flex-direction:column;gap:8px">
-                  <button class="icon-btn">Settings</button>
-                  <button class="icon-btn">Logout</button>
-                </div>
-              </div>
-            </div>
-
-            <div class="widget">
-              <h4 style="margin:0 0 8px 0">Filters</h4>
-              <div style="display:flex;flex-direction:column;gap:8px">
-                <select style="background:transparent;border-radius:8px;padding:8px;border:1px solid rgba(255,255,255,0.04)">
-                  <option>All categories</option>
-                  <option>Vegetables</option>
-                  <option>Grains</option>
-                  <option>Fruits</option>
-                </select>
-                <input placeholder="Search by trader" style="background:transparent;border-radius:8px;padding:8px;border:1px solid rgba(255,255,255,0.04)" />
-              </div>
-            </div>
-          </aside>
-        </div>
-      </main>
-    </div>
-  </div>
-
-  <!-- Modal -->
-  <div class="modal-back" id="modalBack" role="dialog" aria-hidden="true" aria-modal="true">
-    <div class="modal" role="document" aria-labelledby="modalTitle">
-      <h3 id="modalTitle">Create Listing</h3>
-      <div class="field"><label>Title</label><input id="ltitle" placeholder="e.g. Fresh Tomatoes 20kg" /></div>
-      <div class="field"><label>Category</label><input id="lcat" placeholder="Vegetables"/></div>
-      <div class="field"><label>Price (₹)</label><input id="lprice" type="number" placeholder="e.g. 1200"/></div>
-      <div class="field"><label>Description</label><textarea id="ldesc" rows="3"></textarea></div>
-      <div style="display:flex;justify-content:flex-end;gap:8px">
-        <button class="icon-btn" id="closeModal">Cancel</button>
-        <button class="add-btn" id="saveListing">Publish</button>
+    <main>
+      <div class="card">
+        <h3>Recent Requests</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Product</th>
+              <th>Farmer</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="requestTable"></tbody>
+        </table>
       </div>
-    </div>
+    </main>
   </div>
+  <div id="toast" class="toast"></div>
 
   <script>
-    // --- Mobile menu toggle ---
-    const hamburger = document.getElementById('hamburger');
-    const mobileMenu = document.getElementById('mobileMenu');
-    hamburger?.addEventListener('click', () => {
-      const open = mobileMenu.style.display === 'block';
-      mobileMenu.style.display = open ? 'none' : 'block';
-      hamburger.setAttribute('aria-expanded', String(!open));
-    });
-    // click outside mobile menu closes it
-    document.addEventListener('click', (e) => {
-      if (!mobileMenu || !hamburger) return;
-      if (mobileMenu.style.display === 'block' && !mobileMenu.contains(e.target) && !hamburger.contains(e.target)) {
-        mobileMenu.style.display = 'none';
-        hamburger.setAttribute('aria-expanded', 'false');
-      }
-    });
-
-    // --- mobile chatbot ---
-    const chatToggle = document.getElementById('chatToggle');
-    const mobileChat = document.getElementById('mobileChat');
-    const closeMobileChat = document.getElementById('closeMobileChat');
-    chatToggle?.addEventListener('click', () => {
-      const open = mobileChat.style.display === 'block';
-      mobileChat.style.display = open ? 'none' : 'block';
-      chatToggle.setAttribute('aria-expanded', String(!open));
-    });
-    closeMobileChat?.addEventListener('click', () => { mobileChat.style.display = 'none'; chatToggle.setAttribute('aria-expanded', 'false'); });
-
-    // --- Chart drawing (HiDPI aware with transform reset) ---
-    const revData = [8600, 7200, 9400, 10800, 12300, 11100, 12500, 14000, 13000, 12800, 13600, 14800];
-    function drawLine(canvas, data){
-      const ctx = canvas.getContext('2d');
-      // reset any transform (important when resizing)
-      ctx.setTransform(1,0,0,1,0,0);
-      const w = canvas.width, h = canvas.height;
-      // We'll draw in CSS pixels scale (we already scaled canvas below)
-      ctx.clearRect(0,0,w,h);
-      const pad = 22;
-      const min = Math.min(...data), max = Math.max(...data);
-      const range = max - min || 1;
-      ctx.lineWidth = 1;
-      ctx.strokeStyle = 'rgba(255,255,255,0.04)';
-      // grid lines
-      for(let i=0;i<4;i++){ const y = pad + (h - 2*pad)*(i/3); ctx.beginPath(); ctx.moveTo(pad,y); ctx.lineTo(w-pad,y); ctx.stroke(); }
-      // line
-      ctx.beginPath();
-      data.forEach((v,i) => {
-        const x = pad + (i/(data.length-1))*(w - 2*pad);
-        const y = h - pad - ((v - min)/range)*(h - 2*pad);
-        if (i === 0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
-      });
-      ctx.strokeStyle = 'rgba(126,34,255,0.95)'; ctx.lineWidth = 2; ctx.stroke();
-      // fill area
-      ctx.lineTo(w - pad, h - pad); ctx.lineTo(pad, h - pad); ctx.closePath();
-      const grad = ctx.createLinearGradient(0,0,0,h); grad.addColorStop(0,'rgba(124,58,237,0.18)'); grad.addColorStop(1,'rgba(124,58,237,0.02)');
-      ctx.fillStyle = grad; ctx.fill();
-    }
-    function fitCanvas(c){
-      const ratio = window.devicePixelRatio || 1;
-      const rect = c.getBoundingClientRect();
-      const w = Math.round(rect.width * ratio);
-      const h = Math.round(rect.height * ratio);
-      c.width = w; c.height = h;
-      const ctx = c.getContext('2d');
-      ctx.setTransform(1,0,0,1,0,0);
-      ctx.scale(ratio, ratio);
-    }
-    const canvas = document.getElementById('revChart');
-    function renderChart(){
-      // ensure canvas has a CSS height to work with
-      canvas.style.height = '160px';
-      fitCanvas(canvas);
-      // draw using CSS pixel dimensions (we've already scaled ctx by ratio)
-      drawLine(canvas, revData);
-    }
-    renderChart();
-    window.addEventListener('resize', renderChart);
-
-    // --- populate orders table ---
-    const orders = [
-      {id:'#A1001', trader:'R. Kumar', items:3, value:1240, status:'Delivered'},
-      {id:'#A1002', trader:'Mehta Traders', items:1, value:320, status:'Pending'},
-      {id:'#A1003', trader:'FarmKart', items:6, value:4440, status:'Shipped'},
-      {id:'#A1004', trader:'S. Mehta', items:2, value:760, status:'Delivered'},
-      {id:'#A1005', trader:'GreenWay', items:4, value:1590, status:'Cancelled'}
+    // Fake requests (for demo)
+    const sampleData = [
+      { id: 1, product: "Potatos", farmer: "Suresh Patel", status: "Requested" },
+      { id: 2, product: "Onions", farmer: "Rajesh Mehta", status: "Approved" },
     ];
-    const tbody = document.getElementById('ordersTable');
-    orders.forEach(o=>{
-      const tr = document.createElement('tr');
-      tr.innerHTML = `<td>${o.id}</td><td>${o.trader}</td><td>${o.items}</td><td>₹${o.value.toLocaleString()}</td><td><span class='pill'>${o.status}</span></td>`;
-      tbody.appendChild(tr);
-    });
 
-    // --- modal logic ---
-    const modalBack = document.getElementById('modalBack');
-    const openAdd = document.getElementById('openAdd');
-    const quickAdd = document.getElementById('quickAdd');
-    const closeModal = document.getElementById('closeModal');
-    const saveListing = document.getElementById('saveListing');
-    openAdd?.addEventListener('click', ()=> { modalBack.style.display = 'flex'; modalBack.setAttribute('aria-hidden','false'); });
-    quickAdd?.addEventListener('click', ()=> { modalBack.style.display = 'flex'; modalBack.setAttribute('aria-hidden','false'); });
-    closeModal?.addEventListener('click', ()=> { modalBack.style.display = 'none'; modalBack.setAttribute('aria-hidden','true'); });
-    modalBack?.addEventListener('click', (e)=> { if (e.target === modalBack) { modalBack.style.display = 'none'; modalBack.setAttribute('aria-hidden','true'); }});
-    saveListing?.addEventListener('click', ()=> {
-      const title = document.getElementById('ltitle').value || 'Untitled listing';
-      alert('Listing published: ' + title);
-      modalBack.style.display = 'none'; modalBack.setAttribute('aria-hidden','true');
-    });
-    document.addEventListener('keydown', (e)=> { if (e.key === 'Escape') { modalBack.style.display = 'none'; modalBack.setAttribute('aria-hidden','true'); mobileMenu.style.display='none'; mobileChat.style.display='none'; }});
+    function loadRequests() {
+      const table = document.getElementById("requestTable");
+      table.innerHTML = "";
+      sampleData.forEach(req => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${req.product}</td>
+          <td>${req.farmer}</td>
+          <td>${req.status}</td>
+          <td>${
+            req.status === "Requested"
+              ? `<button onclick="sendRequest(${req.id})">Send Request</button>`
+              : "—"
+          }</td>
+        `;
+        table.appendChild(row);
+      });
+    }
+
+    // Toast notification
+    function showToast(message) {
+      const toast = document.getElementById("toast");
+      toast.textContent = message;
+      toast.classList.add("show");
+      setTimeout(() => toast.classList.remove("show"), 4000);
+    }
+
+    // Simulated Request Sending
+    function sendRequest(id) {
+      showToast("Request sent to farmer...");
+      // After confirmation (simulate)
+      setTimeout(() => {
+        localStorage.setItem(
+          "approvedRequest",
+          JSON.stringify({ farmerName: "Suresh Patel", farmerMobile: "9998877766" })
+        );
+        checkForApproval();
+      }, 2500);
+    }
+
+    // Check if farmer approved
+    function checkForApproval() {
+      const approved = JSON.parse(localStorage.getItem("approvedRequest"));
+      if (approved) {
+        showToast(
+          `📞 Farmer ${approved.farmerName} confirmed your order! Contact: ${approved.farmerMobile}`
+        );
+        localStorage.removeItem("approvedRequest");
+      }
+    }
+
+    function logout() {
+      showToast("Logging out...");
+      setTimeout(() => (window.location.href = "index.html"), 2000);
+    }
+
+    window.onload = () => {
+      loadRequests();
+      checkForApproval();
+    };
+
+  // Load user data from localStorage
+  const userData = JSON.parse(localStorage.getItem("userProfile"));
+
+  if (userData) {
+    document.getElementById("traderName").textContent = userData.fullName || "Trader Name";
+    document.getElementById("traderEmail").textContent = userData.email || "N/A";
+    document.getElementById("traderPhone").textContent = userData.phone || "N/A";
+
+    const traderPhoto = document.getElementById("traderPhoto");
+    traderPhoto.src = userData.profilePhoto || "images/default.png";
+  } else {
+    console.warn("⚠️ No trader data found in localStorage.");
+  }
+window.addEventListener("storage", () => {
+  location.reload();
+});
+
   </script>
 </body>
 </html>
