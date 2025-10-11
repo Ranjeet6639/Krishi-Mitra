@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Krishi Mitra - Trader Portal</title>
+  <link rel="stylesheet" href="/Frontend/sell-buy.css" />
+</head>
+<body>
+  <header>
+    <h1>💼 Krishi Mitra - Trader Portal <button id="resetDataBtn" style="position: fixed; top: 10px; right: 10px; z-index: 1000;">
+  🗑️ Reset Data (Demo)
+</button></h1>
+    
+
+  </header>
+
+  <main>
+    <section class="form-card">
+      <h2>Post Your Requirement</h2>
+      <form id="traderForm">
+        <select id="reqVegName" required>
+          <option value="">Select Vegetable</option>
+          <option>Tomato</option>
+          <option>Potato</option>
+          <option>Onion</option>
+          <option>Carrot</option>
+          <option>Cabbage</option>
+          <option>Chili</option>
+        </select>
+        <input type="number" id="reqQuantity" placeholder="Quantity Needed (kg)" required />
+        <input type="number" id="budget" placeholder="Budget per kg (₹)" required />
+        <input type="text" id="reqLocation" placeholder="Delivery Location" required />
+        <button type="submit" class="btn">Post Requirement</button>
+      </form>
+    </section>
+
+    <section class="form-card">
+      <h2>Available Vegetables from Farmers</h2>
+      <div id="farmerListings"></div>
+    </section>
+  </main>
+
+  <script src="/Frontend/sell-buy.js"></script>
+  
+  <script>
+    // === TRADER SIDE - When Farmer Approves ===
+window.addEventListener("load", () => {
+  const approved = JSON.parse(localStorage.getItem("approvedRequest"));
+  if (approved) {
+    alert(
+      `📞 Farmer ${approved.farmerName} confirmed your order!\nContact: ${approved.farmerMobile}`
+    );
+    localStorage.removeItem("approvedRequest"); // clear after showing once
+  }
+});
+
+  </script>
+</body>
+</html>

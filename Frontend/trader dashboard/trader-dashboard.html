@@ -3,496 +3,425 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Trader Dashboard — Krishi Mitra</title>
+  <title>Trader Dashboard | Krishi Mitra</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg-0: #071026;
+      --bg-1: #0b1221;
+      --card: #0b1220;
+      --muted:#9aa4b2;
+      --accent:#0ea5a4;
+      --accent-2:#7c3aed;
+      --glass: rgba(255,255,255,0.04);
+      --radius:12px;
+      --gap:18px;
+      --maxw:1200px;
+      --text: #e6eef6;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;background:linear-gradient(180deg,var(--bg-0) 0%, var(--bg-1) 100%);color:var(--text);font-family:'Poppins',sans-serif}
+    a{color:inherit}
+    /* header */
+    header.site-header{
+      position:sticky;top:0;z-index:40;
+      background: linear-gradient(90deg, #111c33, #0f1730);
+      display:flex;align-items:center;justify-content:space-between;
+      padding:12px 20px;gap:12px;box-shadow:0 2px 12px rgba(1,6,20,0.5);
+    }
+    .header-left{display:flex;align-items:center;gap:20px}
+    .brand-logo{
+      display:flex;align-items:center;gap:12px;
+    }
+    .brand-icon{
+      width:44px;height:44px;border-radius:9px;
+      display:grid;place-items:center;font-weight:700;
+      background:linear-gradient(135deg,var(--accent),var(--accent-2));
+      color:#fff;font-size:15px;
+    }
+    .brand-title{line-height:1}
+    .brand-title h1{margin:0;font-size:16px;font-weight:600}
+    .brand-title p{margin:0;font-size:12px;color:var(--muted)}
 
-  <!-- Styles -->
-  <link rel="stylesheet" href="trader-dashboard.css">
+    /* top nav links */
+    nav.top-nav{
+      display:flex;gap:8px;align-items:center;
+    }
+    nav.top-nav a{
+      display:inline-flex;align-items:center;gap:8px;padding:8px 10px;border-radius:10px;color:var(--muted);text-decoration:none;font-size:14px;
+    }
+    nav.top-nav a.active, nav.top-nav a:hover{background:var(--glass);color:#fff}
 
-  <!-- Chart.js (for trend charts) -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    /* hamburger for mobile */
+    .hamburger{display:none;background:transparent;border:0;color:var(--muted);font-size:20px;padding:8px;border-radius:8px;cursor:pointer}
+    .mobile-menu{display:none;position:fixed;top:64px;left:12px;right:12px;background:#071428;padding:12px;border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,0.6)}
+
+    /* chatbot */
+    .header-right{display:flex;align-items:center;gap:12px}
+    .chatbot{
+      background:#101b32;border-radius:12px;padding:10px;display:flex;flex-direction:column;align-items:flex-start;max-width:240px;min-width:180px;
+    }
+    .chatbot h4{margin:0 0 8px 0;color:var(--accent-2);font-size:15px}
+    .chatbot p{margin:0 0 8px 0;color:#b7c3d6;font-size:12px}
+    .chatbot input{width:100%;border:none;padding:8px;border-radius:8px;background:#0f172a;color:var(--text);outline:none}
+    /* small chat toggle button for mobile */
+    .chat-toggle{display:none;background:linear-gradient(90deg,var(--accent),var(--accent-2));border:0;padding:8px 10px;border-radius:10px;color:#041010;font-weight:700;cursor:pointer}
+
+    /* layout */
+    .wrap{max-width:var(--maxw);margin:18px auto;padding:0 18px}
+    .app{display:grid;grid-template-columns:1fr 320px;gap:var(--gap);align-items:start;padding-top:18px}
+    .main{min-height:60vh}
+    .topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;gap:12px}
+    .search{display:flex;align-items:center;gap:10px;background:var(--card);padding:10px;border-radius:12px;min-width:260px}
+    .search input{background:transparent;border:0;outline:none;color:inherit;font-size:14px}
+    .top-actions{display:flex;gap:10px;align-items:center}
+    .icon-btn{background:var(--card);padding:8px;border-radius:10px;cursor:pointer}
+    .add-btn{background:linear-gradient(90deg,var(--accent),var(--accent-2));padding:10px 12px;border-radius:10px;border:0;color:#ffffff;font-weight:700;cursor:pointer}
+
+    /* cards */
+    .cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
+    .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.02));padding:18px;border-radius:12px;box-shadow:0 6px 18px rgba(2,6,23,0.6)}
+    .card .k{font-size:12px;color:var(--muted)}
+    .card .v{font-size:20px;font-weight:700;margin-top:6px}
+
+    .grid{display:grid;grid-template-columns:2fr 1fr;gap:12px}
+    .panel{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.02));padding:16px;border-radius:12px;min-height:140px}
+    table{width:100%;border-collapse:collapse;font-size:13px}
+    thead th{color:var(--muted);text-align:left;padding:8px 6px;border-bottom:1px solid rgba(255,255,255,0.03)}
+    tbody td{padding:10px 6px;border-bottom:1px solid rgba(255,255,255,0.03)}
+    .pill{background:rgba(255,255,255,0.03);padding:6px 8px;border-radius:999px;font-size:12px}
+
+    aside.right{position:sticky;top:84px;height:calc(100vh - 120px);overflow:auto;padding:10px}
+    .widget{background:var(--card);padding:12px;border-radius:12px;margin-bottom:12px}
+
+    /* modal */
+    .modal-back{position:fixed;inset:0;background:rgba(2,6,23,0.6);display:none;align-items:center;justify-content:center;padding:20px}
+    .modal{width:100%;max-width:600px;background:#071022;padding:18px;border-radius:12px}
+    .field{display:flex;flex-direction:column;margin-bottom:10px}
+    .field input,.field textarea{background:transparent;border:1px solid rgba(255,255,255,0.06);padding:10px;border-radius:8px;color:inherit}
+
+    /* utilities */
+    .flex{display:flex;gap:10px;align-items:center}
+    .muted{color:var(--muted)}
+    button:focus, input:focus, a:focus{outline:2px solid rgba(124,58,237,0.18);outline-offset:2px;transition:outline 0.12s}
+
+    /* responsive */
+    @media (max-width:1100px){
+      .cards{grid-template-columns:repeat(2,1fr)}
+      .grid{grid-template-columns:1fr}
+      .app{grid-template-columns:1fr 300px}
+    }
+    @media (max-width:880px){
+      nav.top-nav{display:none}
+      .hamburger{display:inline-flex}
+      .chat-toggle{display:inline-flex}
+      .chatbot{display:none}
+      .mobile-menu{display:none}
+      aside.right{position:static;height:auto}
+      .app{grid-template-columns:1fr}
+      .cards{grid-template-columns:1fr}
+    }
+    @media (max-width:520px){
+      .brand-title h1{font-size:14px}
+      .search{min-width:140px}
+    }
+
+    /* small scrollbar */
+    ::-webkit-scrollbar{width:10px;height:10px}
+    ::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.03);border-radius:10px}
+  </style>
 </head>
 <body>
-  <div class="wrap">
-    <!-- SIDEBAR -->
-    <aside class="sidebar" id="sidebar">
-      <div class="brand">
-        <div class="logo">KM</div>
-        <div class="brand-meta">
-          <div class="brand-title">Krishi Mitra</div>
-          <div class="brand-sub">Trader Admin</div>
+  <header class="site-header" role="banner">
+    <div class="header-left">
+      <div class="brand-logo" aria-hidden="false">
+        <div class="brand-icon" aria-hidden="true">KM</div>
+        <div class="brand-title">
+          <h1>Krishi Mitra</h1>
+          <p>Trader Dashboard</p>
         </div>
       </div>
 
-      <nav class="menu">
-        <button class="menu-item active" data-panel="dashboard">Dashboard</button>
-        <button class="menu-item" data-panel="market">Market</button>
-        <button class="menu-item" data-panel="orders">Orders</button>
-        <button class="menu-item" data-panel="inbox">Inbox</button>
-        <button class="menu-item" data-panel="settings">Settings</button>
+      <!-- top nav (hidden on small screens) -->
+      <nav class="top-nav" role="navigation" aria-label="Primary">
+        <a href="#" class="active" aria-current="page">🏠 Dashboard</a>
+        <a href="#">👨‍🌾 Traders</a>
+        <a href="#">📦 Listings</a>
+        <a href="#">🧾 Orders</a>
+        <a href="#">📊 Analytics</a>
+        <a href="#">💬 Messages</a>
+        <a href="#">⚙️ Settings</a>
       </nav>
 
-      <div class="sidebar-footer">
-        <button id="logoutBtn" class="btn-ghost">Logout</button>
+      <!-- hamburger for mobile -->
+      <button class="hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false">☰</button>
+    </div>
+
+    <div class="header-right">
+      <!-- chat for large screens -->
+      <div class="chatbot" id="chatbot" aria-live="polite">
+        <h4>AI Chatbot (Demo)</h4>
+        <p>Ask: "top listings" or "orders today"</p>
+        <input type="text" placeholder="Type a question" aria-label="Chat input (demo UI only)" />
       </div>
-    </aside>
 
-    <!-- MAIN -->
-    <main class="main">
-      <header class="topbar">
-        <div class="top-left">
-          <button id="toggleSidebar" class="toggle-btn" aria-label="Toggle sidebar">☰</button>
-          <h1 class="page-title">Trader Dashboard</h1>
-          <p class="page-sub">Overview • Manage bids, view market and chat</p>
-        </div>
+      <!-- chat toggle for mobile -->
+      <button class="chat-toggle" id="chatToggle" aria-expanded="false" aria-controls="mobileChat">Chat</button>
+    </div>
+  </header>
 
-        <div class="top-right">
-          <div class="search-wrap">
-            <input id="globalSearch" class="input search" placeholder="Search crops, bids, farmers..." />
-          </div>
-
-          <button id="openChat" class="btn btn-primary">AI Chat</button>
-
-          <div class="profile">
-            <div class="avatar">T</div>
-            <div class="info">
-              <div class="name">Suresh</div>
-              <div class="role">Trader</div>
-            </div>
-          </div>
-        </div>
-      </header>
-
-      <!-- PANELS -->
-      <section id="panels" class="panels">
-
-        <!-- DASHBOARD PANEL -->
-        <section class="panel active-panel" id="panel-dashboard">
-          <!-- summary cards -->
-          <div class="cards">
-            <article class="card">
-              <div class="card-title">Total Deals</div>
-              <div class="card-value">128</div>
-              <div class="card-note">Since last month</div>
-            </article>
-
-            <article class="card">
-              <div class="card-title">Earnings</div>
-              <div class="card-value">₹ 45,230</div>
-              <div class="card-note">Net received</div>
-            </article>
-
-            <article class="card">
-              <div class="card-title">Active Bids</div>
-              <div class="card-value">17</div>
-              <div class="card-note">Open on marketplace</div>
-            </article>
-
-            <article class="card">
-              <div class="card-title">Unread Messages</div>
-              <div class="card-value">4</div>
-              <div class="card-note">AI & Farmer messages</div>
-            </article>
-          </div>
-
-          <!-- main content split -->
-          <div class="grid-two">
-            <div class="panel-block">
-              <div class="panel-header">
-                <h3>Market Listings</h3>
-                <div class="header-actions">
-                  <select id="filterCrop" class="input small">
-                    <option value="">All crops</option>
-                    <option>Wheat</option><option>Rice</option><option>Corn</option>
-                  </select>
-                  <button id="refreshMarket" class="btn-ghost small">Refresh</button>
-                </div>
-              </div>
-
-              <div class="table-wrap">
-                <table class="table" id="marketTable">
-                  <thead>
-                    <tr>
-                      <th>Crop</th><th>Qty</th><th>Price (₹)</th><th>Farmer</th><th>Location</th><th></th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <!-- JS fills rows -->
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
-            <aside class="panel-block side">
-              <div class="panel-header">
-                <h3>Price Trends (6 months)</h3>
-              </div>
-              <div class="chart-wrap">
-                <canvas id="trendChart"></canvas>
-              </div>
-
-              <div class="mini-cards">
-                <div class="mini">
-                  <div class="mini-title">Avg Price</div>
-                  <div class="mini-value">₹ 24,800</div>
-                </div>
-                <div class="mini">
-                  <div class="mini-title">Volatility</div>
-                  <div class="mini-value">Low</div>
-                </div>
-              </div>
-            </aside>
-          </div>
-
-          <!-- lower row -->
-          <div class="grid-two">
-            <div class="panel-block">
-              <div class="panel-header">
-                <h3>Recent Orders</h3>
-                <div class="header-actions">
-                  <button id="newOrder" class="btn btn-primary small">New Bid</button>
-                </div>
-              </div>
-
-              <div class="table-wrap">
-                <table class="table" id="ordersTable">
-                  <thead><tr><th>ID</th><th>Crop</th><th>Qty</th><th>Value</th><th>Status</th></tr></thead>
-                  <tbody><!-- JS --></tbody>
-                </table>
-              </div>
-            </div>
-
-            <aside class="panel-block side">
-              <div class="panel-header">
-                <h3>Quick Actions</h3>
-              </div>
-              <div class="quick-list">
-                <button id="downloadReport" class="btn-ghost">Download Report</button>
-                <button id="manageProfile" class="btn-ghost">Edit Profile</button>
-                <button id="openInbox" class="btn-ghost">Open Inbox</button>
-              </div>
-            </aside>
-          </div>
-        </section>
-
-        <!-- MARKET PANEL -->
-        <section class="panel hidden" id="panel-market">
-          <div class="panel-header">
-            <h3>Market - All Listings</h3>
-            <div class="header-actions">
-              <input id="marketSearch" placeholder="Search listing..." class="input small" />
-            </div>
-          </div>
-
-          <div class="table-wrap">
-            <table class="table" id="marketTableFull">
-              <thead><tr><th>Crop</th><th>Qty</th><th>Price</th><th>Farmer</th><th>Action</th></tr></thead>
-              <tbody><!-- JS --></tbody>
-            </table>
-          </div>
-        </section>
-
-        <!-- ORDERS PANEL -->
-        <section class="panel hidden" id="panel-orders">
-          <div class="panel-header"><h3>All Orders</h3></div>
-          <div class="table-wrap">
-            <table class="table" id="allOrdersTable">
-              <thead><tr><th>ID</th><th>Crop</th><th>Qty</th><th>Value</th><th>Status</th></tr></thead>
-              <tbody><!-- JS --></tbody>
-            </table>
-          </div>
-        </section>
-
-        <!-- INBOX PANEL -->
-        <section class="panel hidden" id="panel-inbox">
-          <div class="panel-header"><h3>Inbox</h3></div>
-          <div class="panel-body">
-            <p class="muted">AI chat integrated below — placeholder messages available.</p>
-            <div class="inbox-list" id="inboxList"><!-- JS --></div>
-          </div>
-        </section>
-
-        <!-- SETTINGS PANEL -->
-        <section class="panel hidden" id="panel-settings">
-          <div class="panel-header"><h3>Settings</h3></div>
-          <div class="panel-body">
-            <label class="label">Notification Email</label>
-            <input class="input" value="trader@example.com" />
-            <label class="label">Theme</label>
-            <select class="input small"><option>Krishi Green</option><option>Dark</option></select>
-            <div style="height:16px"></div>
-            <button class="btn btn-primary">Save Settings</button>
-          </div>
-        </section>
-
-      </section> <!-- /panels -->
-    </main>
+  <!-- mobile menu (appears when hamburger toggled) -->
+  <div id="mobileMenu" class="mobile-menu" role="dialog" aria-modal="true" style="display:none">
+    <nav style="display:flex;flex-direction:column;gap:8px">
+      <a href="#">🏠 Dashboard</a>
+      <a href="#">👨‍🌾 Traders</a>
+      <a href="#">📦 Listings</a>
+      <a href="#">🧾 Orders</a>
+      <a href="#">📊 Analytics</a>
+      <a href="#">💬 Messages</a>
+      <a href="#">⚙️ Settings</a>
+    </nav>
   </div>
 
-  <!-- AI CHAT MODAL (placeholder) -->
-  <div id="aiChat" class="ai-chat hidden" role="dialog" aria-modal="true" aria-label="AI Chat">
-    <div class="ai-header">
-      <div>Krishi AI Assistant</div>
-      <button id="closeAi" class="icon">✕</button>
+  <!-- mobile chat panel -->
+  <div id="mobileChat" class="mobile-menu" style="display:none">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+      <strong>AI Chatbot (Demo)</strong>
+      <button id="closeMobileChat" style="background:transparent;border:0;color:var(--muted)">✕</button>
     </div>
-    <div class="ai-body" id="aiBody">
-      <div class="ai-note">This chat is a placeholder. Hook your AI or backend here.</div>
-      <div class="msg bot">Hello — I can help you find crops, suggest bid prices, or summarize orders.</div>
-    </div>
-    <div class="ai-footer">
-      <input id="aiInput" placeholder="Ask the assistant..." />
-      <button id="aiSend" class="btn btn-primary">Send</button>
+    <p style="color:#b7c3d6;margin:0 0 8px">Ask: "top listings" or "orders today"</p>
+    <input type="text" placeholder="Type a question" style="width:100%;padding:8px;border-radius:8px;border:none;background:#0f172a;color:var(--text)" />
+  </div>
+
+  <div class="wrap">
+    <div class="app" role="main">
+      <main class="main">
+        <div class="topbar" role="region" aria-label="Quick actions">
+          <div style="display:flex;gap:12px;align-items:center">
+            <div class="search" role="search" aria-label="Search">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style="opacity:0.8"><path d="M21 21l-4.35-4.35" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="11" cy="11" r="6" stroke="currentColor" stroke-width="1.5"/></svg>
+              <input placeholder="Search traders, listings, orders..." aria-label="Search input" />
+            </div>
+            <div class="muted">Last sync: Oct 7, 2025</div>
+          </div>
+
+          <div class="top-actions">
+            <div class="icon-btn" title="Notifications" role="button" aria-label="Notifications">🔔</div>
+            <div class="icon-btn" title="Messages" role="button" aria-label="Messages">✉️</div>
+            <button class="add-btn" id="openAdd" aria-controls="modalBack">+ Add Listing</button>
+            <div style="display:flex;gap:8px;align-items:center">
+              <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='36' height='36'><rect rx='8' width='36' height='36' fill='%237c3aed'/><text x='50%' y='57%' font-size='16' font-family='Arial' text-anchor='middle' fill='white'>TR</text></svg>" alt="avatar" style="border-radius:8px" />
+            </div>
+          </div>
+        </div>
+
+        <section class="cards" aria-label="Top metrics">
+          <div class="card"><div class="k">Total Traders</div><div class="v">1,248</div><div class="muted" style="margin-top:8px">+24 in last 7 days</div></div>
+          <div class="card"><div class="k">Active Listings</div><div class="v">562</div><div class="muted" style="margin-top:8px">+8 today</div></div>
+          <div class="card"><div class="k">Today's Orders</div><div class="v">78</div><div class="muted" style="margin-top:8px">Peak hour: 11:00</div></div>
+          <div class="card"><div class="k">Revenue (30d)</div><div class="v">₹1,24,800</div><div class="muted" style="margin-top:8px">Avg order: ₹1,620</div></div>
+        </section>
+
+        <div class="grid">
+          <div>
+            <div class="panel" aria-label="Revenue chart">
+              <h4 style="margin-top:0">Revenue (last 12 days)</h4>
+              <canvas id="revChart" width="800" height="200" style="width:100%;height:160px;border-radius:10px;background:linear-gradient(180deg, rgba(0,0,0,0.02), transparent)"></canvas>
+              <div style="display:flex;justify-content:space-between;margin-top:12px">
+                <div class="muted">Visitor: 3.2k</div>
+                <div class="muted">Conversion: 2.4%</div>
+              </div>
+            </div>
+
+            <div class="panel" style="margin-top:12px">
+              <h4 style="margin:0 0 12px 0">Recent Orders</h4>
+              <table aria-label="Recent orders table">
+                <thead>
+                  <tr><th>Order</th><th>Trader</th><th>Items</th><th>Value</th><th>Status</th></tr>
+                </thead>
+                <tbody id="ordersTable">
+                  <!-- rows injected by JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <aside class="right" aria-label="Right column widgets">
+            <div class="widget">
+              <h4 style="margin:0 0 8px 0">Quick Actions</h4>
+              <div class="flex" style="flex-direction:column">
+                <button class="add-btn" id="quickAdd">Create Listing</button>
+                <button class="icon-btn">Export CSV</button>
+                <button class="icon-btn">Send Broadcast</button>
+              </div>
+            </div>
+
+            <div class="widget">
+              <h4 style="margin:0 0 8px 0">Top Traders</h4>
+              <div style="display:flex;flex-direction:column;gap:8px">
+                <div class="flex" style="justify-content:space-between"><div><strong>R. Kumar</strong><div class="muted" style="font-size:12px">Palak & Veg</div></div><div class="pill">₹24,600</div></div>
+                <div class="flex" style="justify-content:space-between"><div><strong>S. Mehta</strong><div class="muted" style="font-size:12px">Grains</div></div><div class="pill">₹19,200</div></div>
+                <div class="flex" style="justify-content:space-between"><div><strong>FarmKart</strong><div class="muted" style="font-size:12px">Multi-producer</div></div><div class="pill">₹17,900</div></div>
+              </div>
+            </div>
+
+            <div class="widget">
+              <h4 style="margin:0 0 8px 0">Profile</h4>
+              <div class="flex" style="justify-content:space-between">
+                <div>
+                  <div style="font-weight:700">Admin</div>
+                  <div class="muted">admin@krishimitra.example</div>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:8px">
+                  <button class="icon-btn">Settings</button>
+                  <button class="icon-btn">Logout</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="widget">
+              <h4 style="margin:0 0 8px 0">Filters</h4>
+              <div style="display:flex;flex-direction:column;gap:8px">
+                <select style="background:transparent;border-radius:8px;padding:8px;border:1px solid rgba(255,255,255,0.04)">
+                  <option>All categories</option>
+                  <option>Vegetables</option>
+                  <option>Grains</option>
+                  <option>Fruits</option>
+                </select>
+                <input placeholder="Search by trader" style="background:transparent;border-radius:8px;padding:8px;border:1px solid rgba(255,255,255,0.04)" />
+              </div>
+            </div>
+          </aside>
+        </div>
+      </main>
     </div>
   </div>
 
-  <!-- CREATE BID MODAL -->
-  <div id="bidModal" class="modal hidden" role="dialog" aria-modal="true">
-    <div class="modal-card">
-      <header class="modal-header"><h3>Create Bid</h3><button id="closeBid" class="icon">✕</button></header>
-      <form id="bidForm" class="modal-body">
-        <label class="label">Crop</label><input name="crop" class="input" required />
-        <label class="label">Quantity (e.g., 1 ton)</label><input name="qty" class="input" required />
-        <label class="label">Offer Price (₹)</label><input name="price" class="input" required />
-        <div class="modal-actions">
-          <button type="button" id="cancelBid" class="btn-ghost">Cancel</button>
-          <button type="submit" class="btn btn-primary">Submit Bid</button>
-        </div>
-      </form>
+  <!-- Modal -->
+  <div class="modal-back" id="modalBack" role="dialog" aria-hidden="true" aria-modal="true">
+    <div class="modal" role="document" aria-labelledby="modalTitle">
+      <h3 id="modalTitle">Create Listing</h3>
+      <div class="field"><label>Title</label><input id="ltitle" placeholder="e.g. Fresh Tomatoes 20kg" /></div>
+      <div class="field"><label>Category</label><input id="lcat" placeholder="Vegetables"/></div>
+      <div class="field"><label>Price (₹)</label><input id="lprice" type="number" placeholder="e.g. 1200"/></div>
+      <div class="field"><label>Description</label><textarea id="ldesc" rows="3"></textarea></div>
+      <div style="display:flex;justify-content:flex-end;gap:8px">
+        <button class="icon-btn" id="closeModal">Cancel</button>
+        <button class="add-btn" id="saveListing">Publish</button>
+      </div>
     </div>
   </div>
 
-  <!-- script -->
   <script>
-    /* Professional Trader Dashboard - Plain JS
-   - No live feeds
-   - AI Chat placeholder included
-   - Clean admin behaviour (tab switching, modals, chart)
-*/
-
-document.addEventListener('DOMContentLoaded', () => {
-
-  /* -----------------------
-     Mock (static) data
-     ----------------------- */
-  const market = [
-    { id: 1, crop: 'Wheat', qty: '2 tons', price: 28000, farmer: 'Raju', loc: 'MP' },
-    { id: 2, crop: 'Rice', qty: '1.5 tons', price: 24000, farmer: 'Sita', loc: 'Punjab' },
-    { id: 3, crop: 'Corn', qty: '500 kg', price: 8000, farmer: 'Rahul', loc: 'Karnataka' },
-    { id: 4, crop: 'Soybean', qty: '1 ton', price: 36000, farmer: 'Anil', loc: 'Gujarat' }
-  ];
-  const orders = [
-    { id: 'TR-1001', crop: 'Wheat', qty: '1 ton', value: 14000, status: 'Completed' },
-    { id: 'TR-1002', crop: 'Rice', qty: '500 kg', value: 8000, status: 'In Progress' },
-    { id: 'TR-1003', crop: 'Corn', qty: '300 kg', value: 4800, status: 'Pending' }
-  ];
-  const inbox = [
-    { from: 'Raju', text: 'Wheat available at ₹28000 for 2 tons', date: '2025-09-30' },
-    { from: 'Sita', text: 'Rice ready; need pickup confirmation', date: '2025-09-29' }
-  ];
-
-  /* -----------------------
-     Utility: dom references
-     ----------------------- */
-  const menuItems = document.querySelectorAll('.menu-item');
-  const panels = document.querySelectorAll('.panel');
-  const marketTable = document.querySelector('#marketTable tbody');
-  const marketTableFull = document.querySelector('#marketTableFull tbody');
-  const ordersTable = document.querySelector('#ordersTable tbody');
-  const allOrdersTable = document.querySelector('#allOrdersTable tbody');
-  const inboxList = document.getElementById('inboxList');
-
-  /* -----------------------
-     Render functions
-     ----------------------- */
-  function renderMarket() {
-    marketTable.innerHTML = '';
-    marketTableFull.innerHTML = '';
-    market.forEach(item => {
-      const tr = document.createElement('tr');
-      tr.innerHTML = `<td>${item.crop}</td><td>${item.qty}</td><td>₹ ${item.price.toLocaleString()}</td><td>${item.farmer}</td><td>${item.loc}</td>
-                      <td><button class="btn-ghost small view-btn" data-id="${item.id}">View</button></td>`;
-      marketTable.appendChild(tr);
-
-      const tr2 = tr.cloneNode(true);
-      marketTableFull.appendChild(tr2);
+    // --- Mobile menu toggle ---
+    const hamburger = document.getElementById('hamburger');
+    const mobileMenu = document.getElementById('mobileMenu');
+    hamburger?.addEventListener('click', () => {
+      const open = mobileMenu.style.display === 'block';
+      mobileMenu.style.display = open ? 'none' : 'block';
+      hamburger.setAttribute('aria-expanded', String(!open));
     });
-  }
-
-  function renderOrders() {
-    ordersTable.innerHTML = '';
-    allOrdersTable.innerHTML = '';
-    orders.forEach(o => {
-      const tr = document.createElement('tr');
-      tr.innerHTML = `<td>${o.id}</td><td>${o.crop}</td><td>${o.qty}</td><td>₹ ${o.value.toLocaleString()}</td><td>${o.status}</td>`;
-      ordersTable.appendChild(tr);
-
-      const tr2 = tr.cloneNode(true);
-      allOrdersTable.appendChild(tr2);
+    // click outside mobile menu closes it
+    document.addEventListener('click', (e) => {
+      if (!mobileMenu || !hamburger) return;
+      if (mobileMenu.style.display === 'block' && !mobileMenu.contains(e.target) && !hamburger.contains(e.target)) {
+        mobileMenu.style.display = 'none';
+        hamburger.setAttribute('aria-expanded', 'false');
+      }
     });
-  }
 
-  function renderInbox() {
-    inboxList.innerHTML = '';
-    inbox.forEach(m => {
-      const div = document.createElement('div');
-      div.className = 'inbox-item';
-      div.style.padding = '8px 0';
-      div.innerHTML = `<strong>${m.from}</strong><div style="color:var(--muted);font-size:13px">${m.text}</div><div style="font-size:12px;color:var(--muted)">${m.date}</div>`;
-      inboxList.appendChild(div);
+    // --- mobile chatbot ---
+    const chatToggle = document.getElementById('chatToggle');
+    const mobileChat = document.getElementById('mobileChat');
+    const closeMobileChat = document.getElementById('closeMobileChat');
+    chatToggle?.addEventListener('click', () => {
+      const open = mobileChat.style.display === 'block';
+      mobileChat.style.display = open ? 'none' : 'block';
+      chatToggle.setAttribute('aria-expanded', String(!open));
     });
-  }
+    closeMobileChat?.addEventListener('click', () => { mobileChat.style.display = 'none'; chatToggle.setAttribute('aria-expanded', 'false'); });
 
-  renderMarket(); renderOrders(); renderInbox();
-
-  /* -----------------------
-     Panel switching
-     ----------------------- */
-  menuItems.forEach(item => {
-    item.addEventListener('click', () => {
-      menuItems.forEach(i => i.classList.remove('active'));
-      item.classList.add('active');
-      const panelId = 'panel-' + (item.getAttribute('data-panel') || 'dashboard');
-      panels.forEach(p => p.classList.add('hidden'));
-      const sel = document.getElementById(panelId);
-      if (sel) sel.classList.remove('hidden');
-      // scroll to top of main
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
-  });
-
-  /* -----------------------
-     Sidebar toggle (mobile)
-     ----------------------- */
-  const toggleSidebar = document.getElementById('toggleSidebar');
-  toggleSidebar.addEventListener('click', () => {
-    const sidebar = document.getElementById('sidebar');
-    sidebar.style.display = sidebar.style.display === 'none' ? 'flex' : 'none';
-  });
-
-  /* -----------------------
-     Chart: Price trend (static)
-     ----------------------- */
-  (function initChart(){
-    const ctx = document.getElementById('trendChart').getContext('2d');
-    const chart = new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: ['May','Jun','Jul','Aug','Sep','Oct'],
-        datasets: [{
-          label: 'Avg Price',
-          data: [22000,23000,21000,24000,25000,24800],
-          borderColor: getComputedStyle(document.documentElement).getPropertyValue('--green').trim() || '#16a34a',
-          backgroundColor: 'rgba(22,163,74,0.08)',
-          tension: 0.3,
-          fill: true,
-          pointRadius: 3
-        }]
-      },
-      options: { responsive:true, plugins:{legend:{display:false}} }
-    });
-  })();
-
-  /* -----------------------
-     AI Chat (placeholder)
-     ----------------------- */
-  const aiChat = document.getElementById('aiChat');
-  const openChat = document.getElementById('openChat');
-  const closeAi = document.getElementById('closeAi');
-  const aiSend = document.getElementById('aiSend');
-  const aiInput = document.getElementById('aiInput');
-  const aiBody = document.getElementById('aiBody');
-
-  openChat.addEventListener('click', () => aiChat.classList.toggle('hidden'));
-  closeAi.addEventListener('click', () => aiChat.classList.add('hidden'));
-  aiSend.addEventListener('click', sendAi);
-  aiInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') sendAi(); });
-
-  function sendAi(){
-    const text = aiInput.value.trim();
-    if (!text) return;
-    appendMessage('user', text);
-    aiInput.value = '';
-    // placeholder reply (simulate small processing)
-    setTimeout(() => {
-      appendMessage('bot', `I'm a placeholder AI. You asked: "${text}". Replace this with your AI integration (API/websocket).`);
-    }, 350);
-  }
-
-  function appendMessage(who, text){
-    const div = document.createElement('div');
-    div.className = 'msg ' + (who==='bot' ? 'bot' : 'user');
-    div.style.marginBottom = '8px';
-    div.textContent = text;
-    aiBody.appendChild(div);
-    aiBody.scrollTop = aiBody.scrollHeight;
-  }
-
-  /* -----------------------
-     Modals: Create Bid
-     ----------------------- */
-  const bidModal = document.getElementById('bidModal');
-  const newOrderBtn = document.getElementById('newOrder');
-  const closeBid = document.getElementById('closeBid');
-  const cancelBid = document.getElementById('cancelBid');
-  const bidForm = document.getElementById('bidForm');
-
-  newOrderBtn.addEventListener('click', () => bidModal.classList.remove('hidden'));
-  closeBid.addEventListener('click', () => bidModal.classList.add('hidden'));
-  cancelBid.addEventListener('click', () => bidModal.classList.add('hidden'));
-  bidForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const fd = new FormData(bidForm);
-    const payload = Object.fromEntries(fd.entries());
-    // mock submission - you will replace with real API
-    orders.unshift({ id: 'TR-' + (1000 + orders.length + 1), crop: payload.crop, qty: payload.qty, value: payload.price, status: 'Pending' });
-    renderOrders();
-    bidModal.classList.add('hidden');
-    bidForm.reset();
-    alert('Bid created (mock). Replace with actual API call.');
-  });
-
-  /* -----------------------
-     small UI actions
-     ----------------------- */
-  document.getElementById('refreshMarket').addEventListener('click', () => {
-    // mock refresh visual
-    alert('Market refreshed (mock). Connect to API to load real data.');
-  });
-
-  document.getElementById('downloadReport').addEventListener('click', () => {
-    alert('Downloading report (mock). Implement CSV/PDF export on backend.');
-  });
-
-  document.getElementById('openInbox').addEventListener('click', () => {
-    document.querySelector('.menu-item[data-panel="inbox"]').click();
-  });
-
-  // search filters
-  document.getElementById('marketSearch')?.addEventListener('input', (e) => {
-    const q = e.target.value.toLowerCase();
-    document.querySelectorAll('#marketTableFull tbody tr').forEach(tr => {
-      tr.style.display = tr.textContent.toLowerCase().includes(q) ? '' : 'none';
-    });
-  });
-
-  document.getElementById('globalSearch')?.addEventListener('input', (e) => {
-    const q = e.target.value.toLowerCase();
-    // filter small sample: hide rows that don't match in visible market table
-    document.querySelectorAll('#marketTable tbody tr').forEach(tr => {
-      tr.style.display = tr.textContent.toLowerCase().includes(q) ? '' : 'none';
-    });
-  });
-
-  // delegated click: view buttons
-  document.addEventListener('click', (ev) => {
-    const t = ev.target;
-    if (t.matches('.view-btn')) {
-      const id = t.getAttribute('data-id');
-      alert('View listing id: ' + id + ' (mock). Open detail modal or navigate to listing page.');
+    // --- Chart drawing (HiDPI aware with transform reset) ---
+    const revData = [8600, 7200, 9400, 10800, 12300, 11100, 12500, 14000, 13000, 12800, 13600, 14800];
+    function drawLine(canvas, data){
+      const ctx = canvas.getContext('2d');
+      // reset any transform (important when resizing)
+      ctx.setTransform(1,0,0,1,0,0);
+      const w = canvas.width, h = canvas.height;
+      // We'll draw in CSS pixels scale (we already scaled canvas below)
+      ctx.clearRect(0,0,w,h);
+      const pad = 22;
+      const min = Math.min(...data), max = Math.max(...data);
+      const range = max - min || 1;
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = 'rgba(255,255,255,0.04)';
+      // grid lines
+      for(let i=0;i<4;i++){ const y = pad + (h - 2*pad)*(i/3); ctx.beginPath(); ctx.moveTo(pad,y); ctx.lineTo(w-pad,y); ctx.stroke(); }
+      // line
+      ctx.beginPath();
+      data.forEach((v,i) => {
+        const x = pad + (i/(data.length-1))*(w - 2*pad);
+        const y = h - pad - ((v - min)/range)*(h - 2*pad);
+        if (i === 0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+      });
+      ctx.strokeStyle = 'rgba(126,34,255,0.95)'; ctx.lineWidth = 2; ctx.stroke();
+      // fill area
+      ctx.lineTo(w - pad, h - pad); ctx.lineTo(pad, h - pad); ctx.closePath();
+      const grad = ctx.createLinearGradient(0,0,0,h); grad.addColorStop(0,'rgba(124,58,237,0.18)'); grad.addColorStop(1,'rgba(124,58,237,0.02)');
+      ctx.fillStyle = grad; ctx.fill();
     }
-  });
+    function fitCanvas(c){
+      const ratio = window.devicePixelRatio || 1;
+      const rect = c.getBoundingClientRect();
+      const w = Math.round(rect.width * ratio);
+      const h = Math.round(rect.height * ratio);
+      c.width = w; c.height = h;
+      const ctx = c.getContext('2d');
+      ctx.setTransform(1,0,0,1,0,0);
+      ctx.scale(ratio, ratio);
+    }
+    const canvas = document.getElementById('revChart');
+    function renderChart(){
+      // ensure canvas has a CSS height to work with
+      canvas.style.height = '160px';
+      fitCanvas(canvas);
+      // draw using CSS pixel dimensions (we've already scaled ctx by ratio)
+      drawLine(canvas, revData);
+    }
+    renderChart();
+    window.addEventListener('resize', renderChart);
 
-}); // DOMContentLoaded
+    // --- populate orders table ---
+    const orders = [
+      {id:'#A1001', trader:'R. Kumar', items:3, value:1240, status:'Delivered'},
+      {id:'#A1002', trader:'Mehta Traders', items:1, value:320, status:'Pending'},
+      {id:'#A1003', trader:'FarmKart', items:6, value:4440, status:'Shipped'},
+      {id:'#A1004', trader:'S. Mehta', items:2, value:760, status:'Delivered'},
+      {id:'#A1005', trader:'GreenWay', items:4, value:1590, status:'Cancelled'}
+    ];
+    const tbody = document.getElementById('ordersTable');
+    orders.forEach(o=>{
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${o.id}</td><td>${o.trader}</td><td>${o.items}</td><td>₹${o.value.toLocaleString()}</td><td><span class='pill'>${o.status}</span></td>`;
+      tbody.appendChild(tr);
+    });
 
+    // --- modal logic ---
+    const modalBack = document.getElementById('modalBack');
+    const openAdd = document.getElementById('openAdd');
+    const quickAdd = document.getElementById('quickAdd');
+    const closeModal = document.getElementById('closeModal');
+    const saveListing = document.getElementById('saveListing');
+    openAdd?.addEventListener('click', ()=> { modalBack.style.display = 'flex'; modalBack.setAttribute('aria-hidden','false'); });
+    quickAdd?.addEventListener('click', ()=> { modalBack.style.display = 'flex'; modalBack.setAttribute('aria-hidden','false'); });
+    closeModal?.addEventListener('click', ()=> { modalBack.style.display = 'none'; modalBack.setAttribute('aria-hidden','true'); });
+    modalBack?.addEventListener('click', (e)=> { if (e.target === modalBack) { modalBack.style.display = 'none'; modalBack.setAttribute('aria-hidden','true'); }});
+    saveListing?.addEventListener('click', ()=> {
+      const title = document.getElementById('ltitle').value || 'Untitled listing';
+      alert('Listing published: ' + title);
+      modalBack.style.display = 'none'; modalBack.setAttribute('aria-hidden','true');
+    });
+    document.addEventListener('keydown', (e)=> { if (e.key === 'Escape') { modalBack.style.display = 'none'; modalBack.setAttribute('aria-hidden','true'); mobileMenu.style.display='none'; mobileChat.style.display='none'; }});
   </script>
 </body>
 </html>

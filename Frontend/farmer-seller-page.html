@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Krishi Mitra - Farmer Portal</title>
+  <link rel="stylesheet" href="sell-buy.css" />
+  <button id="resetDataBtn" style="position: fixed; top: 10px; right: 10px; z-index: 1000;">
+  🗑️ Reset Data (Demo)
+</button>
+</head>
+<body>
+  <header>
+    <h1>👨‍🌾 Krishi Mitra - Farmer Portal</h1>
+  </header>
+  <main>
+    <section class="form-card">
+      <h2>Add Your Vegetables for Sale</h2>
+      <form id="farmerForm">
+        <select id="vegName" required>
+          <option value="">Select Vegetable</option>
+          <option>Tomato</option>
+          <option>Potato</option>
+          <option>Onion</option>
+          <option>Carrot</option>
+          <option>Cabbage</option>
+          <option>Chili</option>
+        </select>
+        <input type="number" id="quantity" placeholder="Quantity (kg)" required />
+        <input type="number" id="price" placeholder="Price per kg (₹)" required />
+        <input type="text" id="location" placeholder="Your Location" required />
+        <button type="submit" class="btn">Add Listing</button>
+      </form>
+    </section>
+
+    <section class="form-card">
+      <h2>Trader Requirements & Your Listings</h2>
+      <div id="traderRequirements"></div>
+      
+    </section>
+  </main>
+
+  <script src="sell-buy.js"></script>
+</body>
+</html>
