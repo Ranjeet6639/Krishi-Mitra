@@ -437,7 +437,9 @@ otpInput.addEventListener("input", () => {
   if (!valid) return;
 
   // Get profile image (base64)
-  let profileImage = "";
+  // Get profile image (base64)
+let profileImage = profilePreview.src || "";
+profilePreview.src = localStorage.getItem("profilePhoto") || "images/default.png";
   const imgTag = profilePreview.querySelector("img");
   if (imgTag) profileImage = imgTag.src;
 

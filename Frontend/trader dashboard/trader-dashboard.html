@@ -22,8 +22,8 @@
      <!-- Sidebar -->
     <div class="sidebar" id="sidebar">
       <div class="sidebar">
-  <img id="sidebar-profile img" src="images/default.png" alt="Trader Photo" class="profile-photo">
-  <h3 id="profile-card h3">Trader Name</h3>
+  <img id="traderPhoto" src="images/default.png" alt="Trader Photo" class="profile-photo">
+<h3 id="traderName">Trader Name</h3>
   <p><strong>Email:</strong> <span id="traderEmail"></span></p>
   <p><strong>Phone:</strong> <span id="traderPhone"></span></p>
 </div>
@@ -117,6 +117,7 @@
     };
 
   // Load user data from localStorage
+window.addEventListener("DOMContentLoaded", () => {
   const userData = JSON.parse(localStorage.getItem("userProfile"));
 
   if (userData) {
@@ -129,9 +130,12 @@
   } else {
     console.warn("⚠️ No trader data found in localStorage.");
   }
-window.addEventListener("storage", () => {
-  location.reload();
 });
+
+window.addEventListener("storage", (event) => {
+  if (event.key === "userProfile") location.reload();
+});
+
 
   </script>
 </body>
