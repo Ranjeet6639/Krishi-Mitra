@@ -122,6 +122,15 @@
     font-weight: 600;
   }
 
+  #terms{
+    margin-left: 320px;
+    margin-bottom: -15px;
+    display: flex;
+    width: 15px;
+    
+
+  }
+
   /* Floating AI Chatbot */
   #chatbot {
     position: fixed;
@@ -140,8 +149,108 @@
     z-index: 1000;
   }
 
-  #chatbot:hover { transform: scale(1.1); }
-  #chatbot span { color:#fff; font-size:28px; }
+  #chatbot:hover { 
+    transform: scale(1.1);
+   }
+
+  #chatbot span { 
+    color:#fff; 
+    font-size:28px;
+   }
+
+  .verify-section { 
+    display: flex; 
+    align-items: center; 
+    gap: 8px; }
+
+  .verify-section button { 
+    padding: 6px 10px; 
+    font-size: 13px; 
+    cursor: pointer;
+   }
+
+  .otp-input { 
+    width: 70px;
+     padding: 4px; 
+     text-align: center; 
+     display: none; 
+    }
+
+  .verified { 
+    background-color: #4CAF50;
+     color: white;
+     }
+
+  .success-msg { 
+    display:none;
+     color:green;
+      margin-top:10px;
+     }
+
+  #phoneVerifyBtn{
+    background-color: #198754;
+    color: white;
+    border-radius: 5px;
+    border: none;
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+
+  #emailVerifyBtn{
+     background-color: #198754;
+    color: white;
+    border-radius: 5px;
+    border: none;
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+
+  #emailConfirmBtn{
+    background-color: #ccc;
+    color:#333;
+    border-radius: 5px;
+    margin-left: 10px;
+    margin-top: 10px;
+    width: 70px;
+    height: 30px;
+  }
+
+   #emailOTP{
+    margin-top: 10px;
+    border: 1.5px solid #ccc;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: 0.3s;
+    padding: 10px;
+    width: 100px;
+    text-align: center;
+    display: none;
+
+  }
+
+  #phoneConfirmBtn{
+     background-color: #ccc;
+    color:#333;
+    border-radius: 5px;
+    margin-left: 10px;
+    margin-top: 10px;
+    width: 70px;
+    height: 30px;
+  }
+
+  #phoneOTP{
+     margin-top: 10px;
+    border: 1.5px solid #ccc;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: 0.3s;
+    padding: 10px;
+    width: 100px;
+    text-align: center;
+    display: none;
+  }
 
   @media(max-width:500px){
     body { padding: 10px; }
