@@ -112,3 +112,10 @@
   .scroll-right { width: 100%; }
   .scroll-image { width: 100%; max-width: 100%; }
 }
+
+footer {
+      text-align: center;
+      margin-top: 40px;
+      color: #6b7280;;
+      padding-bottom: 20px;
+  }
