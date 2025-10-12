@@ -25,6 +25,7 @@
       <label for="fullName">Full Name</label>
       <input type="text" id="fullName" placeholder="Enter full name" required>
     </div>
+
     <!-- Email with verification -->
     <div class="form-group">
       <label for="email">Email</label>
@@ -32,7 +33,7 @@
         <input type="email" id="email" placeholder="Enter email" required>
         <button type="button" id="emailVerifyBtn">Verify</button>
       </div>
-      <input type="text" id="emailOTP" class="otp-input" placeholder="OTP">
+      <input type="text" id="emailOTP" class="otp-input" placeholder="OTP" style="display:none;">
       <button type="button" id="emailConfirmBtn" style="display:none;">Confirm</button>
     </div>
 
@@ -43,7 +44,7 @@
         <input type="tel" id="phone" placeholder="Enter phone number" required>
         <button type="button" id="phoneVerifyBtn">Verify</button>
       </div>
-      <input type="text" id="phoneOTP" class="otp-input" placeholder="OTP">
+      <input type="text" id="phoneOTP" class="otp-input" placeholder="OTP" style="display:none;">
       <button type="button" id="phoneConfirmBtn" style="display:none;">Confirm</button>
     </div>
 
@@ -79,13 +80,11 @@
 <script>
   const form = document.getElementById('traderForm');
   const successMsg = document.getElementById('successMsg');
-  const chatbot = document.getElementById('chatbot');
   const uploadBtn = document.getElementById('uploadBtn');
   const fileInput = document.getElementById('profilePhoto');
   const preview = document.getElementById('profilePreview');
-  let profileImageBase64 = '';
 
-  // OTP values
+  let profileImageBase64 = '';
   let emailOTPCode = null;
   let phoneOTPCode = null;
   let emailVerified = false;
@@ -105,67 +104,58 @@
     }
   });
 
-// Email verification
-document.getElementById('emailVerifyBtn').addEventListener('click', () => {
-  const email = document.getElementById('email').value.trim();
-  if(!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
-    alert('Enter a valid email!');
-    return;
-  }
+  // Email verification
+  document.getElementById('emailVerifyBtn').addEventListener('click', () => {
+    const email = document.getElementById('email').value.trim();
+    if(!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+      alert('Enter a valid email!');
+      return;
+    }
+    emailOTPCode = Math.floor(100000 + Math.random() * 900000);
+    document.getElementById('emailOTP').value = '';
+    alert(`OTP sent to ${email}: ${emailOTPCode}`); // simulate
+    document.getElementById('emailOTP').style.display = 'inline-block';
+    document.getElementById('emailConfirmBtn').style.display = 'inline-block';
+  });
 
-  // Reset previous OTP and input field
-  emailOTPCode = null;
-  document.getElementById('emailOTP').value = '';
-  
-  // Generate new OTP
-  emailOTPCode = Math.floor(100000 + Math.random() * 900000); // 6-digit OTP
-  alert(`OTP sent to ${email}: ${emailOTPCode}`); // simulate
-
-  document.getElementById('emailOTP').style.display = 'inline-block';
-  document.getElementById('emailConfirmBtn').style.display = 'inline-block';
-});
-
-document.getElementById('emailConfirmBtn').addEventListener('click', () => {
-  const entered = document.getElementById('emailOTP').value.trim();
-  if(entered == emailOTPCode){
-    emailVerified = true;
-    document.getElementById('emailVerifyBtn').textContent = '✅ Verified';
-    document.getElementById('emailVerifyBtn').disabled = true;
-    document.getElementById('emailVerifyBtn').classList.add('verified');
-    document.getElementById('emailOTP').style.display = 'none';
-    document.getElementById('emailConfirmBtn').style.display = 'none';
-    alert('Email verified successfully!');
-  } else {
-    alert('Invalid Email OTP!');
-  }
-});
+  document.getElementById('emailConfirmBtn').addEventListener('click', () => {
+    const entered = document.getElementById('emailOTP').value.trim();
+    if(entered == emailOTPCode){
+      emailVerified = true;
+      const btn = document.getElementById('emailVerifyBtn');
+      btn.textContent = '✅ Verified';
+      btn.disabled = true;
+      btn.classList.add('verified');
+      document.getElementById('emailOTP').style.display = 'none';
+      document.getElementById('emailConfirmBtn').style.display = 'none';
+      alert('Email verified successfully!');
+    } else {
+      alert('Invalid Email OTP!');
+    }
+  });
 
   // Phone verification
   document.getElementById('phoneVerifyBtn').addEventListener('click', () => {
-  const phone = document.getElementById('phone').value.trim();
-  if(!/^[0-9]{10}$/.test(phone)){
-    alert('Enter a valid 10-digit phone number!');
-    return;
-  }
-
-  // Reset previous OTP and input field
-  phoneOTPCode = null;
-  document.getElementById('phoneOTP').value = '';
-
-  phoneOTPCode = Math.floor(1000 + Math.random() * 9000); // 4-digit OTP
-  alert(`OTP sent to ${phone}: ${phoneOTPCode}`); // simulate
-
-  document.getElementById('phoneOTP').style.display = 'inline-block';
-  document.getElementById('phoneConfirmBtn').style.display = 'inline-block';
-});
+    const phone = document.getElementById('phone').value.trim();
+    if(!/^[0-9]{10}$/.test(phone)){
+      alert('Enter a valid 10-digit phone number!');
+      return;
+    }
+    phoneOTPCode = Math.floor(1000 + Math.random() * 9000);
+    document.getElementById('phoneOTP').value = '';
+    alert(`OTP sent to ${phone}: ${phoneOTPCode}`); // simulate
+    document.getElementById('phoneOTP').style.display = 'inline-block';
+    document.getElementById('phoneConfirmBtn').style.display = 'inline-block';
+  });
 
   document.getElementById('phoneConfirmBtn').addEventListener('click', () => {
     const entered = document.getElementById('phoneOTP').value.trim();
     if(entered == phoneOTPCode){
       phoneVerified = true;
-      document.getElementById('phoneVerifyBtn').textContent = '✅ Verified';
-      document.getElementById('phoneVerifyBtn').disabled = true;
-      document.getElementById('phoneVerifyBtn').classList.add('verified');
+      const btn = document.getElementById('phoneVerifyBtn');
+      btn.textContent = '✅ Verified';
+      btn.disabled = true;
+      btn.classList.add('verified');
       document.getElementById('phoneOTP').style.display = 'none';
       document.getElementById('phoneConfirmBtn').style.display = 'none';
       alert('Phone number verified successfully!');
@@ -178,19 +168,27 @@ document.getElementById('emailConfirmBtn').addEventListener('click', () => {
   form.addEventListener('submit', function(e) {
     e.preventDefault();
 
+    // Mandatory profile photo check
+    if(!profileImageBase64){
+      alert('Please upload a profile photo!');
+      return;
+    }
+
+    // Email & phone verification check
     if (!emailVerified || !phoneVerified) {
       alert('Please verify both email and phone before submitting!');
       return;
     }
 
+    // Password match check
     const password = document.getElementById('password').value.trim();
     const confirmPassword = document.getElementById('confirmPassword').value.trim();
-
     if(password !== confirmPassword){
       alert('Passwords do not match!');
       return;
     }
 
+    // Collect trader data
     const traderData = {
       name: document.getElementById('fullName').value.trim(),
       email: document.getElementById('email').value.trim(),
@@ -205,11 +203,13 @@ document.getElementById('emailConfirmBtn').addEventListener('click', () => {
     localStorage.setItem('traderProfile', JSON.stringify(traderData));
 
     successMsg.style.display = 'block';
+
+    // Redirect after 2 seconds
     setTimeout(() => { 
       window.location.href = 'trader-dashboard.html'; 
     }, 2000);
   });
- 
 </script>
+
 </body>
 </html>
