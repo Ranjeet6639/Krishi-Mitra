@@ -75,9 +75,16 @@
             </select>
           </div>
           <div class="form-group">
-            <label>Ration Card Number</label>
-            <input type="text" id="rationNumber">
+           <label>Ration Card Number</label>
+           <input type="text" id="rationNumber" maxlength="12" required>
+           <small id="rationError" class="error"></small>
           </div>
+        </div>
+        <!-- ✅ Profile Photo Upload -->
+        <div class="form-row">
+          <div class="form-group photo-upload">
+            <label for="profilePhoto">Upload Profile Photo</label>
+            <input type="file" id="profilePhoto" accept="image/*">
         </div>
       </fieldset>
 
@@ -381,7 +388,64 @@
       window.location.href = "farmer-login.html";
     }, 2000); // 2-second delay before redirect
   });
-  
+
+  // Profile Photo Preview + Save to Local Storage
+const profilePhoto = document.getElementById("profilePhoto");
+const photoPreview = document.getElementById("photoPreview");
+
+// Load saved photo from localStorage (if any)
+window.addEventListener("DOMContentLoaded", function () {
+  const savedPhoto = localStorage.getItem("profilePhoto");
+  if (savedPhoto) {
+    photoPreview.src = savedPhoto;
+  }
+});
+
+profilePhoto.addEventListener("change", function () {
+  const file = profilePhoto.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      const imageData = e.target.result;
+
+      // Show preview
+      photoPreview.src = imageData;
+
+      // Save to localStorage
+      localStorage.setItem("profilePhoto", imageData);
+    };
+    reader.readAsDataURL(file);
+  }
+});
+ // ✅ Block letters, symbols, spaces as user types
+    const rationInput = document.getElementById("rationNumber");
+    const rationError = document.getElementById("rationError");
+
+    rationInput.addEventListener("input", (e) => {
+      // Keep only numbers
+      e.target.value = e.target.value.replace(/[^0-9]/g, "");
+
+      // Optional: show live error if more than 12 digits
+      if (e.target.value.length > 12) {
+        e.target.value = e.target.value.slice(0, 12);
+      }
+    });
+
+    // ✅ Validate before submit
+    document.getElementById("myForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+      const rationNumber = rationInput.value.trim();
+      const rationPattern = /^[0-9]{12}$/;
+
+      if (!rationPattern.test(rationNumber)) {
+        rationError.textContent = "Ration card number must be exactly 12 digits.";
+      } else {
+        rationError.textContent = "";
+        alert("Form submitted successfully!");
+        // Save to localStorage if needed:
+        // localStorage.setItem("rationNumber", rationNumber);
+      }
+    });
   </script>
 </body>
 </html>
